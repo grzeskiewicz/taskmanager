@@ -1,0 +1,14 @@
+.login {
+	display:flex;
+	justify-content: center;
+	align-items:center;
+}
+.login form {
+	display:flex;
+	flex-flow:row wrap;
+	width:20vw;
+}
+
+form > *{
+	flex:1 100%;
+}
