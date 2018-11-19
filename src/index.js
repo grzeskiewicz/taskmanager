@@ -2,13 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { authServices } from './services.js';
+import io from 'socket.io-client';
 
-
+const socket = io('http://localhost:3005');
+socket.on('test', (msg => {
+    console.log(msg);
+}));
 class Panel extends React.Component {
+        constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+ 
+
     render() {
         return (
-            <div className="">
-            ZALOGOWANY
+            <div id="task-group">
+            <div id="new-task">new task</div>
+            <div id="pending-tasks"></div>
+            <div id="done-tasks">done</div>
       </div>
 
         );
