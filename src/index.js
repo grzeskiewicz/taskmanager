@@ -4,18 +4,27 @@ import './index.css';
 import { authServices } from './services.js';
 import io from 'socket.io-client';
 
+/*
 const socket = io('http://localhost:3005');
 socket.on('test', (msg => {
     console.log(msg);
-}));
+})); */
 class Panel extends React.Component {
         constructor(props) {
         super(props);
         this.state = {};
     }
 
- 
+//socket has to have name-username
 
+//socket->in case of sending task to user->get this data over socket->refresh the panel with the tasks
+//task has time limit, content, done icon, get icon
+// admin has ready templates of messages to send (only today's tasks can be displayed)
+// (role->admin, role->user, role->manager)
+//admin-displays only logged users
+//admin-selects user->create task, delete task->info sent via socket
+// when receiving task->ALERT TO PHONE or SMS(?)
+// task when done->send info to admin
     render() {
         return (
             <div id="task-group">
