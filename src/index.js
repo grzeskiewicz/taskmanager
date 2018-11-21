@@ -4,28 +4,30 @@ import './index.css';
 import { authServices } from './services.js';
 import io from 'socket.io-client';
 
-/*
-const socket = io('http://localhost:3005');
+
+const socket = io('https://taskmanager-node.herokuapp.com');
+
 socket.on('test', (msg => {
     console.log(msg);
-})); */
+}));
 class Panel extends React.Component {
-        constructor(props) {
+    constructor(props) {
         super(props);
         this.state = {};
     }
 
-//socket has to have name-username
+    //socket has to have name-username
 
-//socket->in case of sending task to user->get this data over socket->refresh the panel with the tasks
-//task has time limit, content, done icon, get icon
-// admin has ready templates of messages to send (only today's tasks can be displayed)
-// (role->admin, role->user, role->manager)
-//admin-displays only logged users
-//admin-selects user->create task, delete task->info sent via socket
-// when receiving task->ALERT TO PHONE or SMS(?)
-// task when done->send info to admin
+    //socket->in case of sending task to user->get this data over socket->refresh the panel with the tasks
+    //task has time limit, content, done icon, get icon
+    // admin has ready templates of messages to send (only today's tasks can be displayed)
+    // (role->admin, role->user, role->manager)
+    //admin-displays only logged users
+    //admin-selects user->create task, delete task->info sent via socket
+    // when receiving task->ALERT TO PHONE or SMS(?)
+    // task when done->send info to admin
     render() {
+        console.log(this.props);
         return (
             <div id="task-group">
             <div id="new-task">new task</div>
@@ -41,7 +43,7 @@ class Panel extends React.Component {
 class Login extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', authorised: false };
+        this.state = { username: '', password: '', role: '' ,authorised: false };
 
         this.handleUsername = this.handleUsername.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
@@ -53,12 +55,16 @@ class Login extends React.Component {
             username: this.state.username,
             password: this.state.password
         };
-        console.log(user);
         authServices.login(user)
             .then(res => {
                 if (res.success) {
+                    console.log(res);
                     authServices.getInfo().then(res => {
-                        if (res.success) { this.setState({ authorised: true }) } else {
+                        if (res.success) {
+                            socket.emit('logged', this.state.username);
+                            const admin= res.role==="admin"? true: false;
+                            this.setState({ authorised: true , role: res.role, admin: admin});
+                        } else {
                             this.setState({ authorised: false });
                         }
                     })
@@ -82,7 +88,7 @@ class Login extends React.Component {
             <input name='username' autoFocus placeholder='Your username' value={this.state.username} onChange={this.handleUsername} required></input>
             <input type='password' id='password' name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
             <button type='submit'>Login</button>
-            {this.state.authorised ? <Panel /> : null } 
+            {this.state.authorised ? <Panel user={this.state} /> : null } 
         </form>
       </div>
         );
