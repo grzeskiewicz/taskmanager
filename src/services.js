@@ -21,6 +21,7 @@ export const authServices = {
     useCredentials(token) {
         this.isAuthenticated = true;
         this.authToken = token;
+        headers.delete('Authorization');
         headers.append('Authorization', this.authToken);
         // Set the token as header for your requests!
         //$http.defaults.headers.common.Authorization = authToken;
@@ -47,6 +48,7 @@ export const authServices = {
         return fetch(request(`${API_URL}/authuser`, 'POST', user))
             .then(res => res.json())
             .then(result => {
+                console.log(user,result);
                 if (result.success) { // result.ok?
                     this.storeUserCredentials(result.token);
                     return result;

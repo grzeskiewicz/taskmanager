@@ -10,6 +10,24 @@ const socket = io('https://taskmanager-node.herokuapp.com');
 socket.on('test', (msg => {
     console.log(msg);
 }));
+
+class AdminPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+
+    render() {
+        console.log(this.props);
+        return (
+            <div>hehehe
+      </div>
+
+        );
+    }
+}
+
 class Panel extends React.Component {
     constructor(props) {
         super(props);
@@ -43,7 +61,7 @@ class Panel extends React.Component {
 class Login extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', role: '' ,authorised: false };
+        this.state = { username: '', password: '', role: '', authorised: false };
 
         this.handleUsername = this.handleUsername.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
@@ -62,8 +80,8 @@ class Login extends React.Component {
                     authServices.getInfo().then(res => {
                         if (res.success) {
                             socket.emit('logged', this.state.username);
-                            const admin= res.role==="admin"? true: false;
-                            this.setState({ authorised: true , role: res.role, admin: admin});
+                            const admin = res.role === "admin" ? true : false;
+                            this.setState({ authorised: true, role: res.role, admin: admin });
                         } else {
                             this.setState({ authorised: false });
                         }
@@ -88,7 +106,8 @@ class Login extends React.Component {
             <input name='username' autoFocus placeholder='Your username' value={this.state.username} onChange={this.handleUsername} required></input>
             <input type='password' id='password' name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
             <button type='submit'>Login</button>
-            {this.state.authorised ? <Panel user={this.state} /> : null } 
+            {this.state.authorised && this.state.admin===false ? <Panel user={this.state} /> : null } 
+            {this.state.admin ? <AdminPanel user={this.state} /> : null  }
         </form>
       </div>
         );
