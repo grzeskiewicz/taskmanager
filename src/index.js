@@ -11,6 +11,8 @@ socket.on('test', (msg => {
     console.log(msg);
 }));
 
+
+
 class AdminPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -19,9 +21,16 @@ class AdminPanel extends React.Component {
 
 
     render() {
-        console.log(this.props);
+        socket.on('userlist', (msg => {
+           this.setState({userlist: msg.userlist})
+        }));
+        console.log(this.state.userlist);
         return (
-            <div>hehehe
+            <div>
+            <div></div>
+           
+            
+
       </div>
 
         );
@@ -76,7 +85,7 @@ class Login extends React.Component {
         authServices.login(user)
             .then(res => {
                 if (res.success) {
-                    console.log(res);
+                    //console.log(res);
                     authServices.getInfo().then(res => {
                         if (res.success) {
                             socket.emit('logged', this.state.username);
