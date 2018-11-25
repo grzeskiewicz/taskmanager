@@ -19,18 +19,25 @@ class AdminPanel extends React.Component {
         this.state = {};
     }
 
+    selectUser(user) {
+   
+    }
 
     render() {
+
         socket.on('userlist', (msg => {
-           this.setState({userlist: msg.userlist})
+            this.setState({ userlist: msg.userlist })
         }));
-        console.log(this.state.userlist);
+
+        const userlist = String(this.state.userlist).split(',').map((user, index) => {
+            return (
+                <li key={index} onClick={this.selectUser(user)}>{user}</li>
+            );
+        });
         return (
             <div>
+            <ul>{userlist}</ul>
             <div></div>
-           
-            
-
       </div>
 
         );
@@ -42,6 +49,7 @@ class Panel extends React.Component {
         super(props);
         this.state = {};
     }
+
 
     //socket has to have name-username
 
@@ -70,11 +78,12 @@ class Panel extends React.Component {
 class Login extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', role: '', authorised: false };
+        this.state = { username: '', password: '', role: '', authorised: false, admin: false };
 
         this.handleUsername = this.handleUsername.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
+        this.logout = this.logout.bind(this);
     }
     handleLogin(event) {
         event.preventDefault();
@@ -106,6 +115,14 @@ class Login extends React.Component {
     handlePassword(event) {
         this.setState({ password: event.target.value });
     }
+
+    logout() {
+        authServices.logout();
+        if (this.state.admin) {
+            socket.emit('logout', this.state.username);
+        }
+        this.setState({ username: '', password: '', role: '', authorised: false, admin: false });
+    }
     render() {
 
 
@@ -117,6 +134,7 @@ class Login extends React.Component {
             <button type='submit'>Login</button>
             {this.state.authorised && this.state.admin===false ? <Panel user={this.state} /> : null } 
             {this.state.admin ? <AdminPanel user={this.state} /> : null  }
+            {this.state.authorised ? <button onClick={this.logout}>Logout</button> : null} 
         </form>
       </div>
         );
