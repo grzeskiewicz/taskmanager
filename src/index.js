@@ -12,18 +12,68 @@ socket.on('test', (msg => {
 }));
 
 
+class User extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { room: '', content: '' };
+        this.handleRoom = this.handleRoom.bind(this);
+        this.handleTaskContent = this.handleTaskContent.bind(this);
+        this.newTask = this.newTask.bind(this);
+    }
+
+    handleTaskContent(event) {
+        this.setState({ taskcontent: event.target.value });
+    }
+
+    handleRoom(event) {
+        this.setState({ room: event.target.value });
+    }
+
+    newTask(event) {
+        event.preventDefault();
+        const task = {
+            username: this.props.username,
+            room: this.state.room,
+            content: this.state.taskcontent
+        };
+        socket.emit('newtask', task);
+        console.log(task);
+    }
+
+    render() {
+        console.log(this.props);
+        return (
+            <div>
+<div>
+        <form onSubmit={this.newTask}>
+            <input name='room' autoFocus placeholder='Room Place' value={this.state.room} onChange={this.handleRoom} required></input>
+            <textarea placeholder='Task to do' value={this.state.taskcontent} onChange={this.handleTaskContent} required></textarea>
+            <button type='submit'>Send task</button>
+        </form>  
+</div>
+
+<div>Cancel the task</div>
+
+      </div>
+
+        );
+    }
+}
 
 class AdminPanel extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = { username: '' };
+        this.selectUser = this.selectUser.bind(this);
     }
 
     selectUser(user) {
-   
+        console.log(user);
+        this.setState({ username: user });
     }
 
     render() {
+        let username = this.state.username;
 
         socket.on('userlist', (msg => {
             this.setState({ userlist: msg.userlist })
@@ -31,13 +81,13 @@ class AdminPanel extends React.Component {
 
         const userlist = String(this.state.userlist).split(',').map((user, index) => {
             return (
-                <li key={index} onClick={this.selectUser(user)}>{user}</li>
+                <li key={index} onClick={() => this.selectUser(user)}>{user}</li>
             );
         });
         return (
             <div>
-            <ul>{userlist}</ul>
-            <div></div>
+            <ul>{userlist}</ul> 
+            {username ? <User username={username} /> : null}
       </div>
 
         );
@@ -132,10 +182,10 @@ class Login extends React.Component {
             <input name='username' autoFocus placeholder='Your username' value={this.state.username} onChange={this.handleUsername} required></input>
             <input type='password' id='password' name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
             <button type='submit'>Login</button>
-            {this.state.authorised && this.state.admin===false ? <Panel user={this.state} /> : null } 
+        </form>
+                    {this.state.authorised && this.state.admin===false ? <Panel user={this.state} /> : null } 
             {this.state.admin ? <AdminPanel user={this.state} /> : null  }
             {this.state.authorised ? <button onClick={this.logout}>Logout</button> : null} 
-        </form>
       </div>
         );
     }
