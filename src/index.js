@@ -6,7 +6,6 @@ import io from 'socket.io-client';
 
 
 const socket = io('https://taskmanager-node.herokuapp.com');
-
 socket.on('test', (msg => {
     console.log(msg);
 }));
@@ -41,7 +40,6 @@ class User extends React.Component {
     }
 
     render() {
-        console.log(this.props);
         return (
             <div>
 <div>
@@ -97,8 +95,10 @@ class AdminPanel extends React.Component {
 class Panel extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = { tasks: [] };
+        this.userSocket = io(`https://taskmanager-node.herokuapp.com/${props.user.username}`);
     }
+
 
 
     //socket has to have name-username
@@ -112,10 +112,22 @@ class Panel extends React.Component {
     // when receiving task->ALERT TO PHONE or SMS(?)
     // task when done->send info to admin
     render() {
-        console.log(this.props);
+        this.userSocket.on('taskreceived', (task => {
+
+            this.setState({ tasks: this.state.tasks.concat(task) });
+            console.log(this.state);
+        }));
+const tasks=this.state.tasks;
+
+const taskrender=tasks.map((task, index) => {
+            return (
+                <li key={index}>{task.room}:{task.content}</li>
+            );
+        });
+
         return (
             <div id="task-group">
-            <div id="new-task">new task</div>
+            <div id="new-task">{taskrender}</div>
             <div id="pending-tasks"></div>
             <div id="done-tasks">done</div>
       </div>
@@ -149,7 +161,7 @@ class Login extends React.Component {
                         if (res.success) {
                             socket.emit('logged', this.state.username);
                             const admin = res.role === "admin" ? true : false;
-                            this.setState({ authorised: true, role: res.role, admin: admin });
+                            this.setState({ authorised: true, role: res.role, admin: admin, password: '' });
                         } else {
                             this.setState({ authorised: false });
                         }
