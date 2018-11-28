@@ -121,7 +121,7 @@ const tasks=this.state.tasks;
 
 const taskrender=tasks.map((task, index) => {
             return (
-                <li key={index}>{task.room}:{task.content}</li>
+                <li key={index} className={task.status}>{task.room}:{task.content}<span>   [Done]</span><span>[TIME]</span></li>
             );
         });
 

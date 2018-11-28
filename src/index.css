@@ -12,3 +12,13 @@
 form > *{
 	flex:1 100%;
 }
+
+.new {
+	background: yellow;
+}
+
+
+.done {
+	background: grey;
+}
+
