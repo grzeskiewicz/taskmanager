@@ -6,10 +6,6 @@ import io from 'socket.io-client';
 
 
 const socket = io('https://taskmanager-node.herokuapp.com');
-socket.on('test', (msg => {
-    console.log(msg);
-}));
-
 
 class User extends React.Component {
     constructor(props) {
@@ -18,6 +14,7 @@ class User extends React.Component {
         this.handleRoom = this.handleRoom.bind(this);
         this.handleTaskContent = this.handleTaskContent.bind(this);
         this.newTask = this.newTask.bind(this);
+
     }
 
     handleTaskContent(event) {
@@ -36,7 +33,6 @@ class User extends React.Component {
             content: this.state.taskcontent
         };
         socket.emit('newtask', task);
-        console.log(task);
     }
 
     render() {
@@ -66,8 +62,7 @@ class AdminPanel extends React.Component {
     }
 
     selectUser(user) {
-        console.log(user);
-        this.setState({ username: user });
+        this.setState({ username: user, active: user });
     }
 
     render() {
@@ -79,13 +74,13 @@ class AdminPanel extends React.Component {
 
         const userlist = String(this.state.userlist).split(',').map((user, index) => {
             return (
-                <li key={index} onClick={() => this.selectUser(user)}>{user}</li>
+                <li key={index} className={this.state.active === user ? 'active' : ''} onClick={() => this.selectUser(user)}>{user}</li>
             );
         });
         return (
             <div>
-            <ul>{userlist}</ul> 
-            {username ? <User username={username} /> : null}
+            <ul className="userlist">{userlist}</ul> 
+            {username ? <User username={this.state.username} /> : null}
       </div>
 
         );
@@ -95,10 +90,23 @@ class AdminPanel extends React.Component {
 class Panel extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { tasks: [] };
-        this.userSocket = io(`https://taskmanager-node.herokuapp.com/${props.user.username}`);
+        this.state = { tasks: [], username: props.user.username, taskSelected: null };
+        socket.on('taskreceived', (task => {
+            this.setState({ tasks: this.state.tasks.concat(task) });
+        }));
+        
     }
-
+    showTask(task) {
+       let rend=<div>
+                <div>
+                    <p>Status: {task.status}</p>
+                    <p>Room: {task.room}</p>
+                    <p>Task: {task.content}</p>
+                </div>
+                    <button>Accept the task</button>
+                </div>;
+            this.setState({ taskSelected: rend });
+    }
 
 
     //socket has to have name-username
@@ -112,24 +120,23 @@ class Panel extends React.Component {
     // when receiving task->ALERT TO PHONE or SMS(?)
     // task when done->send info to admin
     render() {
-        this.userSocket.on('taskreceived', (task => {
 
-            this.setState({ tasks: this.state.tasks.concat(task) });
-            console.log(this.state);
-        }));
-const tasks=this.state.tasks;
+        const tasks = this.state.tasks;
 
-const taskrender=tasks.map((task, index) => {
+        const taskrender = tasks.map((task, index) => {
             return (
-                <li key={index} className={task.status}>{task.room}:{task.content}<span>   [Done]</span><span>[TIME]</span></li>
+                <li key={index} onClick={() => this.showTask(task)} className={task.status}>{task.room}:{task.content} <span>[Done]</span><span>[TIME]</span></li>
             );
         });
 
+
+        
         return (
             <div id="task-group">
             <div id="new-task">{taskrender}</div>
             <div id="pending-tasks"></div>
-            <div id="done-tasks">done</div>
+            <div id="done-tasks">DONE TASKS</div>
+            <div id="task-selected">{this.state.taskSelected}</div>
       </div>
 
         );
@@ -156,7 +163,6 @@ class Login extends React.Component {
         authServices.login(user)
             .then(res => {
                 if (res.success) {
-                    //console.log(res);
                     authServices.getInfo().then(res => {
                         if (res.success) {
                             socket.emit('logged', this.state.username);
@@ -183,6 +189,7 @@ class Login extends React.Component {
         if (this.state.admin) {
             socket.emit('logout', this.state.username);
         }
+        socket.emit('logout', this.state.username);
         this.setState({ username: '', password: '', role: '', authorised: false, admin: false });
     }
     render() {
@@ -195,7 +202,7 @@ class Login extends React.Component {
             <input type='password' id='password' name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
             <button type='submit'>Login</button>
         </form>
-                    {this.state.authorised && this.state.admin===false ? <Panel user={this.state} /> : null } 
+            {this.state.authorised && this.state.admin===false ? <Panel user={this.state} /> : null } 
             {this.state.admin ? <AdminPanel user={this.state} /> : null  }
             {this.state.authorised ? <button onClick={this.logout}>Logout</button> : null} 
       </div>

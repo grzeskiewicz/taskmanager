@@ -1,16 +1,23 @@
-.login {
-	display:flex;
-	justify-content: center;
-	align-items:center;
-}
 .login form {
 	display:flex;
 	flex-flow:row wrap;
 	width:20vw;
 }
 
-form > *{
+.login form > *{
 	flex:1 100%;
+}
+
+
+#task-group{
+	display:flex;
+	flex-flow:row wrap;
+	width:20vw;
+}
+
+#task-group > *{
+	flex:1 100%;
+	border:1px solid black;
 }
 
 .new {
@@ -21,4 +28,9 @@ form > *{
 .done {
 	background: grey;
 }
+
+.userlist .active {
+	background: grey;
+}
+
 
