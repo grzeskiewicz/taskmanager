@@ -7,13 +7,37 @@ import io from 'socket.io-client';
 
 const socket = io('https://taskmanager-node.herokuapp.com');
 
-class User extends React.Component {
+class SelectedUserTasks extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { room: '', content: '' };
+        this.state = { room: '', content: '', tasklist: '' };
         this.handleRoom = this.handleRoom.bind(this);
         this.handleTaskContent = this.handleTaskContent.bind(this);
         this.newTask = this.newTask.bind(this);
+
+        socket.on('usertasks', (tasklist => {
+            if (tasklist[0] && tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
+            if (!tasklist[0]) this.setState({ tasklist: '' });
+        }));
+
+        socket.on('timesup', (tasklist => {
+            if (tasklist[0] && tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
+
+        }));
+
+        socket.on('countdown', (tasklist => {
+            if (tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
+
+        }));
+
+        socket.on('userfinished', (tasklist => {
+            if (tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
+        }));
+
+
+        socket.on('cancelled', (tasklist => {
+            if (tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
+        }));
 
     }
 
@@ -33,20 +57,31 @@ class User extends React.Component {
             content: this.state.taskcontent
         };
         socket.emit('newtask', task);
+        event.target.reset();
+        this.setState({ taskcontent: '', room: '' });
     }
 
+
+    cancelTask(task) {
+        socket.emit('cancel', task);
+    }
+
+
     render() {
+        const tasklist = this.state.tasklist ? [...this.state.tasklist].map((task, index) => {
+            return (
+                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{task.timeleft}</td><td>{task.status==='cancelled' ? '' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
+            );
+        }) : null;
+
         return (
             <div>
-<div>
-        <form onSubmit={this.newTask}>
+        <form id="new-task" onSubmit={this.newTask}>
             <input name='room' autoFocus placeholder='Room Place' value={this.state.room} onChange={this.handleRoom} required></input>
-            <textarea placeholder='Task to do' value={this.state.taskcontent} onChange={this.handleTaskContent} required></textarea>
+            <textarea name='taskcontent' placeholder='Task to do' value={this.state.taskcontent} onChange={this.handleTaskContent} required></textarea>
             <button type='submit'>Send task</button>
-        </form>  
-</div>
-
-<div>Cancel the task</div>
+        </form> 
+        <table id="tasks"><thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Timeleft</th><th>Cancel</th></tr></thead><tbody>{tasklist}</tbody></table>
 
       </div>
 
@@ -59,10 +94,12 @@ class AdminPanel extends React.Component {
         super(props);
         this.state = { username: '' };
         this.selectUser = this.selectUser.bind(this);
+
     }
 
     selectUser(user) {
-        this.setState({ username: user, active: user });
+        this.setState({ username: user, active: user, tasklist: '' });
+        socket.emit('gettasks', user);
     }
 
     render() {
@@ -77,35 +114,123 @@ class AdminPanel extends React.Component {
                 <li key={index} className={this.state.active === user ? 'active' : ''} onClick={() => this.selectUser(user)}>{user}</li>
             );
         });
+
+
         return (
             <div>
             <ul className="userlist">{userlist}</ul> 
-            {username ? <User username={this.state.username} /> : null}
+            {username ? <SelectedUserTasks username={this.state.username} /> : null}
+            
       </div>
 
         );
     }
 }
 
-class Panel extends React.Component {
+/*
+class Counter extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { tasks: [], username: props.user.username, taskSelected: null };
+        this.state = { number: 20 };
+    }
+
+    componentDidMount() {
+        this.interval = setInterval(() => {
+            console.log(this.state.number, this.props.counter)
+            if (this.props.counter === 'double') {
+                this.setState({ number: this.state.number + this.state.number });
+            } else {
+                this.setState({ number: this.state.number - 1 });
+            }
+        }, 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    render() {
+        if (this.state.number === 0) {
+            // this.setState({counter:null});
+            clearInterval(this.interval);
+        }
+        return (
+            <div>
+        <h1>{this.state.number}</h1>
+      </div>
+        )
+    }
+} */
+
+// odliczanie po akceptacji - odliczanie na socket czy na kliencie?
+class Task extends React.Component { //single task with it's own time state
+    constructor(props) {
+        super(props);
+        this.state = { timeleft: null };
+        socket.on('countdown', (tasklist => {
+            for (const taskElem of tasklist) {
+                if (taskElem.room === this.props.task.room && taskElem.content === this.props.task.content) this.setState({ timeleft: taskElem.timeleft });
+            }
+        }));
+
+
+
+    }
+    acceptTask(task) {
+        socket.emit('accept', task);
+        this.setState({ timeleft: 240 });
+    }
+
+
+    finishTask(task) {
+        socket.emit('finish', task);
+    }
+
+    render() {
+        return (
+            <div className="task">
+                    <p>Status: {this.props.task.status} </p>
+                    <p>Room: {this.props.task.room}</p>
+                    <p>Task: {this.props.task.content} </p>
+                    <p>Time: {this.props.task.timeleft} </p>
+
+                {(this.props.task.status!=='new') ? this.state.timeleft : <button onClick={() => this.acceptTask(this.props.task)}>Accept the task</button>}
+                {(this.props.task.status==='pending' || this.props.task.status==='timesup')  ? <button onClick={() => this.finishTask(this.props.task)}>Finish the task</button> : ''}
+                    
+
+            </div>
+        );
+    }
+}
+
+class UserPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { tasks: [] };
         socket.on('taskreceived', (task => {
             this.setState({ tasks: this.state.tasks.concat(task) });
         }));
-        
-    }
-    showTask(task) {
-       let rend=<div>
-                <div>
-                    <p>Status: {task.status}</p>
-                    <p>Room: {task.room}</p>
-                    <p>Task: {task.content}</p>
-                </div>
-                    <button>Accept the task</button>
-                </div>;
-            this.setState({ taskSelected: rend });
+
+        socket.on('usertasks', (tasklist => {
+            this.setState({ tasks: tasklist });
+        }));
+        socket.on('timesup', (tasklist => {
+            this.setState({ tasks: tasklist });
+
+        }));
+
+        socket.on('countdown', (tasklist => {
+            this.setState({ tasks: tasklist });
+
+        }));
+
+        socket.on('userfinished', (tasklist => {
+            this.setState({ tasks: tasklist });
+        }));
+
+        socket.on('cancelled', (tasklist => {
+            this.setState({ tasks: tasklist });
+        }));
     }
 
 
@@ -120,23 +245,18 @@ class Panel extends React.Component {
     // when receiving task->ALERT TO PHONE or SMS(?)
     // task when done->send info to admin
     render() {
-
         const tasks = this.state.tasks;
-
         const taskrender = tasks.map((task, index) => {
             return (
-                <li key={index} onClick={() => this.showTask(task)} className={task.status}>{task.room}:{task.content} <span>[Done]</span><span>[TIME]</span></li>
+                <Task key={index} task={task} />
             );
         });
 
-
-        
         return (
             <div id="task-group">
             <div id="new-task">{taskrender}</div>
             <div id="pending-tasks"></div>
-            <div id="done-tasks">DONE TASKS</div>
-            <div id="task-selected">{this.state.taskSelected}</div>
+            <div id="done-tasks"></div>
       </div>
 
         );
@@ -147,7 +267,6 @@ class Panel extends React.Component {
 class Login extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', role: '', authorised: false, admin: false };
 
         this.handleUsername = this.handleUsername.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
@@ -197,18 +316,35 @@ class Login extends React.Component {
 
         return (
             <div className='login'>
-            <form onSubmit={this.handleLogin}>
+         { this.state.authorised ? <div id="userinfo"> {this.state.username} <button onClick={this.logout}>Logout</button></div> 
+         : <form onSubmit={this.handleLogin}>
             <input name='username' autoFocus placeholder='Your username' value={this.state.username} onChange={this.handleUsername} required></input>
             <input type='password' id='password' name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
             <button type='submit'>Login</button>
-        </form>
-            {this.state.authorised && this.state.admin===false ? <Panel user={this.state} /> : null } 
-            {this.state.admin ? <AdminPanel user={this.state} /> : null  }
-            {this.state.authorised ? <button onClick={this.logout}>Logout</button> : null} 
+        </form> 
+    }
+
       </div>
         );
     }
 }
+
+class Panels extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { username: '', password: '', role: '', authorised: false, admin: false };
+    }
+    render() {
+        return (
+            <div> 
+            {this.state.authorised && this.state.admin===false ? <UserPanel user={this.state} /> : null } 
+            {this.state.admin ? <AdminPanel user={this.state} /> : null  }
+            <Login />
+      </div>
+        );
+    }
+}
+
 
 class Board extends React.Component {
 

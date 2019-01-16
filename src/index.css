@@ -1,36 +1,143 @@
+* {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+/* MOBILE SETUP */
+
 .login form {
-	display:flex;
-	flex-flow:row wrap;
-	width:20vw;
+    display: flex;
+    flex-flow: row wrap;
 }
 
-.login form > *{
-	flex:1 100%;
+.login form>* {
+    flex: 1 100%;
 }
 
 
-#task-group{
-	display:flex;
-	flex-flow:row wrap;
-	width:20vw;
+
+
+
+/* TASKS ON ADMIN PANEL */
+#tasks {
+    border-collapse: collapse;
+    width:100%;
 }
 
-#task-group > *{
-	flex:1 100%;
-	border:1px solid black;
+#tasks td,
+#tasks th {
+    border: 1px solid #ddd;
+    padding: 8px;
 }
+
+#tasks th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+
+/* TASKS ON USER PANEL */
+#task-group {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+#task-group div {
+    flex: 1 100%;
+    border: 1px solid grey;
+}
+
+
+.task {}
+
+.task p {
+    margin: 0px;
+    font-size:0.8rem;
+}
+
+
+
+
+/* DESKTOP SETUP */
+@media only screen and (min-width: 768px) {
+
+    .login form {
+        display: flex;
+        flex-flow: row wrap;
+        width: 20vw;
+    }
+
+    .login form>* {
+        flex: 1 100%;
+    }
+
+
+
+
+
+    /* TASKS ON ADMIN PANEL */
+    #tasks {
+        border-collapse: collapse;
+    }
+
+    #tasks td,
+    #tasks th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    #tasks th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #4CAF50;
+        color: white;
+    }
+
+
+
+    /* TASKS ON USER PANEL */
+    #task-group {
+        display: flex;
+        flex-flow: row wrap;
+        width: 20vw;
+    }
+
+    #task-group div {
+        flex: 1 100%;
+        border: 1px solid grey;
+    }
+
+
+    .task {}
+
+    .task p {
+        margin: 5px;
+    }
+
+
+}
+
+
+
+
+
 
 .new {
-	background: yellow;
+    background: yellow;
 }
 
 
 .done {
-	background: grey;
+    background: grey;
 }
 
+.userlist {
+	width:20vw;
+}
 .userlist .active {
-	background: grey;
+    background: grey;
 }
-
-
