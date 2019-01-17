@@ -7,14 +7,15 @@ import io from 'socket.io-client';
 
 const socket = io('https://taskmanager-node.herokuapp.com');
 
-class SelectedUserTasks extends React.Component {
+
+
+class SelectedUserTasks extends React.Component { //split into new task form and tasklist
     constructor(props) {
         super(props);
-        this.state = { room: '', content: '', tasklist: '' };
-        this.handleRoom = this.handleRoom.bind(this);
-        this.handleTaskContent = this.handleTaskContent.bind(this);
-        this.newTask = this.newTask.bind(this);
+        this.state = { tasklist: '' };
 
+    }
+    componentDidMount() {
         socket.on('usertasks', (tasklist => {
             if (tasklist[0] && tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
             if (!tasklist[0]) this.setState({ tasklist: '' });
@@ -38,7 +39,47 @@ class SelectedUserTasks extends React.Component {
         socket.on('cancelled', (tasklist => {
             if (tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
         }));
+    }
+    componentWillUnmount() {}
 
+
+
+
+
+    cancelTask(task) {
+        socket.emit('cancel', task);
+    }
+
+
+    render() {
+        const tasklist = this.state.tasklist ? [...this.state.tasklist].map((task, index) => {
+            return (
+                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{task.timeleft}</td><td>{task.status==='cancelled' ? '' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
+            );
+        }) : null;
+
+        return (
+            <div id="task-manager">
+            <NewTask username={this.props.username} />
+        <table id="tasks">
+        <thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Timeleft</th><th>Cancel</th></tr></thead>
+        <tbody>{tasklist}</tbody>
+        </table>
+      </div>
+
+        );
+    }
+}
+
+
+
+class NewTask extends React.Component { //split into new task form and tasklist
+    constructor(props) {
+        super(props);
+        this.state = { room: '', content: '' };
+        this.handleRoom = this.handleRoom.bind(this);
+        this.handleTaskContent = this.handleTaskContent.bind(this);
+        this.newTask = this.newTask.bind(this);
     }
 
     handleTaskContent(event) {
@@ -56,34 +97,21 @@ class SelectedUserTasks extends React.Component {
             room: this.state.room,
             content: this.state.taskcontent
         };
+        console.log(task);
         socket.emit('newtask', task);
         event.target.reset();
         this.setState({ taskcontent: '', room: '' });
     }
 
-
-    cancelTask(task) {
-        socket.emit('cancel', task);
-    }
-
-
     render() {
-        const tasklist = this.state.tasklist ? [...this.state.tasklist].map((task, index) => {
-            return (
-                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{task.timeleft}</td><td>{task.status==='cancelled' ? '' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
-            );
-        }) : null;
-
         return (
-            <div>
-        <form id="new-task" onSubmit={this.newTask}>
+            <div id="new-task">        
+            <form  onSubmit={this.newTask}>
             <input name='room' autoFocus placeholder='Room Place' value={this.state.room} onChange={this.handleRoom} required></input>
             <textarea name='taskcontent' placeholder='Task to do' value={this.state.taskcontent} onChange={this.handleTaskContent} required></textarea>
             <button type='submit'>Send task</button>
-        </form> 
-        <table id="tasks"><thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Timeleft</th><th>Cancel</th></tr></thead><tbody>{tasklist}</tbody></table>
-
-      </div>
+            </form> 
+        </div>
 
         );
     }
@@ -96,6 +124,8 @@ class AdminPanel extends React.Component {
         this.selectUser = this.selectUser.bind(this);
 
     }
+    componentDidMount() {}
+    componentWillUnmount() {}
 
     selectUser(user) {
         this.setState({ username: user, active: user, tasklist: '' });
@@ -117,50 +147,14 @@ class AdminPanel extends React.Component {
 
 
         return (
-            <div>
+            <div id="admin-panel">
             <ul className="userlist">{userlist}</ul> 
             {username ? <SelectedUserTasks username={this.state.username} /> : null}
-            
       </div>
 
         );
     }
 }
-
-/*
-class Counter extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { number: 20 };
-    }
-
-    componentDidMount() {
-        this.interval = setInterval(() => {
-            console.log(this.state.number, this.props.counter)
-            if (this.props.counter === 'double') {
-                this.setState({ number: this.state.number + this.state.number });
-            } else {
-                this.setState({ number: this.state.number - 1 });
-            }
-        }, 1000);
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.interval);
-    }
-
-    render() {
-        if (this.state.number === 0) {
-            // this.setState({counter:null});
-            clearInterval(this.interval);
-        }
-        return (
-            <div>
-        <h1>{this.state.number}</h1>
-      </div>
-        )
-    }
-} */
 
 // odliczanie po akceptacji - odliczanie na socket czy na kliencie?
 class Task extends React.Component { //single task with it's own time state
@@ -207,6 +201,9 @@ class UserPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = { tasks: [] };
+
+    }
+    componentDidMount() {
         socket.on('taskreceived', (task => {
             this.setState({ tasks: this.state.tasks.concat(task) });
         }));
@@ -232,6 +229,7 @@ class UserPanel extends React.Component {
             this.setState({ tasks: tasklist });
         }));
     }
+    componentWillUnmount() {}
 
 
     //socket has to have name-username
@@ -253,7 +251,7 @@ class UserPanel extends React.Component {
         });
 
         return (
-            <div id="task-group">
+            <div id="user-panel">
             <div id="new-task">{taskrender}</div>
             <div id="pending-tasks"></div>
             <div id="done-tasks"></div>
@@ -267,18 +265,72 @@ class UserPanel extends React.Component {
 class Login extends React.Component {
     constructor(props) {
         super(props);
-
         this.handleUsername = this.handleUsername.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
-        this.logout = this.logout.bind(this);
     }
     handleLogin(event) {
         event.preventDefault();
         const user = {
-            username: this.state.username,
-            password: this.state.password
+            username: this.props.username,
+            password: this.props.password
         };
+        this.props.login(user);
+    }
+    handleUsername(event) {
+        this.props.setUsername(event.target.value);
+    }
+    handlePassword(event) {
+        this.props.setPassword(event.target.value);
+    }
+    /*
+     */
+    render() {
+
+
+        return (
+            <div className='login'>
+         <form onSubmit={this.handleLogin}>
+            <input name='username' autoFocus placeholder='Your username' value={this.props.username} onChange={this.handleUsername} required></input>
+            <input type='password' id='password' name='password' placeholder='Password' value={this.props.password} onChange={this.handlePassword} required></input>
+            <button type='submit'>Login</button>
+        </form> 
+
+      </div>
+        );
+    }
+}
+
+class Logout extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleLogout = this.handleLogout.bind(this);
+    }
+
+    handleLogout() {
+        this.props.logout();
+    }
+
+    render() {
+        const username = this.props.username;
+        return (
+            <div id="userinfo"> 
+            {username} <button onClick={this.handleLogout}>Logout</button>
+      </div>
+        );
+    }
+}
+
+class Board extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { username: '', password: '', role: '', authorised: false, admin: false };
+        this.setUsername = this.setUsername.bind(this);
+        this.setPassword = this.setPassword.bind(this);
+        this.login = this.login.bind(this);
+        this.logout = this.logout.bind(this);
+    }
+    login(user) {
         authServices.login(user)
             .then(res => {
                 if (res.success) {
@@ -296,62 +348,42 @@ class Login extends React.Component {
                 }
             });
     }
-    handleUsername(event) {
-        this.setState({ username: event.target.value });
-    }
-    handlePassword(event) {
-        this.setState({ password: event.target.value });
-    }
+
 
     logout() {
         authServices.logout();
-        if (this.state.admin) {
-            socket.emit('logout', this.state.username);
-        }
         socket.emit('logout', this.state.username);
         this.setState({ username: '', password: '', role: '', authorised: false, admin: false });
     }
-    render() {
 
-
-        return (
-            <div className='login'>
-         { this.state.authorised ? <div id="userinfo"> {this.state.username} <button onClick={this.logout}>Logout</button></div> 
-         : <form onSubmit={this.handleLogin}>
-            <input name='username' autoFocus placeholder='Your username' value={this.state.username} onChange={this.handleUsername} required></input>
-            <input type='password' id='password' name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
-            <button type='submit'>Login</button>
-        </form> 
+    setUsername(username) {
+        this.setState({ username: username });
     }
 
-      </div>
-        );
+    setPassword(password) {
+        this.setState({ password: password });
     }
-}
 
-class Panels extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { username: '', password: '', role: '', authorised: false, admin: false };
-    }
+    /* { this.state.authorised ? <div id="userinfo"> {this.state.username} <button onClick={this.logout}>Logout</button></div> 
+
+     : login form!*/
     render() {
         return (
-            <div> 
+            <div id="board"> 
+            { 
+            !this.state.authorised ?
+            <Login 
+            username={this.state.username} 
+            password={this.state.password} 
+            setUsername={this.setUsername} 
+            setPassword={this.setPassword} 
+            login={this.login} /> 
+            :
+            <Logout username= {this.state.username} logout={this.logout} /> 
+            }
+
             {this.state.authorised && this.state.admin===false ? <UserPanel user={this.state} /> : null } 
             {this.state.admin ? <AdminPanel user={this.state} /> : null  }
-            <Login />
-      </div>
-        );
-    }
-}
-
-
-class Board extends React.Component {
-
-    render() {
-        return (
-            <div> 
-            <Login />
       </div>
         );
     }

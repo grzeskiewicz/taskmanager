@@ -1,9 +1,19 @@
 * {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
 }
 
 /* MOBILE SETUP */
-
+/*
 .login form {
     display: flex;
     flex-flow: row wrap;
@@ -12,15 +22,16 @@
 .login form>* {
     flex: 1 100%;
 }
-
+*/
 
 
 
 
 /* TASKS ON ADMIN PANEL */
+/*
 #tasks {
     border-collapse: collapse;
-    width:100%;
+    width: 100%;
 }
 
 #tasks td,
@@ -37,76 +48,116 @@
     color: white;
 }
 
+#new-task {
+    display: flex;
+    flex-flow: row wrap;
+}*/
+
 
 
 /* TASKS ON USER PANEL */
-#task-group {
+/*
+#user-panel {
     display: flex;
     flex-flow: row wrap;
 }
 
-#task-group div {
+#user-panel div {
     flex: 1 100%;
     border: 1px solid grey;
 }
+
 
 
 .task {}
 
 .task p {
     margin: 0px;
-    font-size:0.8rem;
+    font-size: 0.8rem;
 }
+*/
 
 
-
-
-/* DESKTOP SETUP */
+/* ========================================DESKTOP SETUP===========================================*/
 @media only screen and (min-width: 768px) {
+    #root {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+       /* align-items: center; */
+        justify-content: center;
+    }
+
+    #board {
+    	height:100%;
+        width: auto;
+        border: 1px solid blue;
+    } 
+
+    .login {
+
+    }
 
     .login form {
         display: flex;
-        flex-flow: row wrap;
-        width: 20vw;
+        flex-flow: column wrap;
+
     }
 
+    /*
     .login form>* {
         flex: 1 100%;
-    }
+    }*/
 
 
 
 
 
     /* TASKS ON ADMIN PANEL */
+    #task-manager {}
+
+
     #tasks {
         border-collapse: collapse;
     }
 
-    #tasks td,
-    #tasks th {
+    #tasks td {
         border: 1px solid #ddd;
-        padding: 8px;
+        padding: 0.7rem;
     }
 
     #tasks th {
-        padding-top: 12px;
-        padding-bottom: 12px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
         text-align: left;
         background-color: #4CAF50;
         color: white;
     }
 
 
+    #new-task form {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+
+
+
 
     /* TASKS ON USER PANEL */
-    #task-group {
+    #user-panel {
         display: flex;
         flex-flow: row wrap;
         width: 20vw;
     }
 
-    #task-group div {
+    #user-panel div {
         flex: 1 100%;
         border: 1px solid grey;
     }
@@ -136,8 +187,9 @@
 }
 
 .userlist {
-	width:20vw;
+    width: 20vw;
 }
+
 .userlist .active {
     background: grey;
 }
