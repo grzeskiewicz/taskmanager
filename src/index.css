@@ -1,6 +1,7 @@
 * {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     box-sizing: border-box;
+    font-size: 12px;
 }
 
 html,
@@ -89,40 +90,57 @@ body {
         display: -ms-flexbox;
         display: -webkit-flex;
         display: flex;
-       /* align-items: center; */
+        /* align-items: center; */
         justify-content: center;
     }
 
     #board {
-    	height:100%;
-        width: auto;
+        height: 100%;
+        flex-basis: 30vw;
         border: 1px solid blue;
-    } 
+    }
+
 
     .login {
+        display: flex;
+        justify-content: center;
 
     }
 
     .login form {
         display: flex;
-        flex-flow: column wrap;
-
+        flex-flow: row wrap;
+        flex-basis: 60%;
     }
 
-    /*
+
     .login form>* {
         flex: 1 100%;
-    }*/
+    }
+
+
+    #admin-panel {}
+
+
+
+    .userlist {
+        width: 50%;
+    }
 
 
 
 
 
     /* TASKS ON ADMIN PANEL */
-    #task-manager {}
-
+    #task-manager {
+        display: flex;
+        justify-content: center;
+        align-content: space-around;
+        flex-flow: row wrap;
+    }
 
     #tasks {
+        width: 100%;
         border-collapse: collapse;
     }
 
@@ -134,7 +152,7 @@ body {
     #tasks th {
         padding-top: 1rem;
         padding-bottom: 1rem;
-        text-align: left;
+        text-align: center;
         background-color: #4CAF50;
         color: white;
     }
@@ -142,7 +160,12 @@ body {
 
     #new-task form {
         display: flex;
-        flex-direction: column;
+        flex-flow: row wrap;
+        justify-content: center;
+    }
+
+    #new-task form>* {
+        flex-basis: 70%;
     }
 
 
@@ -186,9 +209,6 @@ body {
     background: grey;
 }
 
-.userlist {
-    width: 20vw;
-}
 
 .userlist .active {
     background: grey;
