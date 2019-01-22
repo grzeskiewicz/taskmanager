@@ -160,7 +160,7 @@ class AdminPanel extends React.Component {
 class Task extends React.Component { //single task with it's own time state
     constructor(props) {
         super(props);
-        this.state = { timeleft: null };
+        this.state = { timeleft: '', showtask:true };
         socket.on('countdown', (tasklist => {
             for (const taskElem of tasklist) {
                 if (taskElem.room === this.props.task.room && taskElem.content === this.props.task.content) this.setState({ timeleft: taskElem.timeleft });
@@ -180,18 +180,24 @@ class Task extends React.Component { //single task with it's own time state
         socket.emit('finish', task);
     }
 
+    toggleTask(task){
+        this.setState({showtask: !this.state.showtask});
+    }
+
     render() {
         return (
             <div className="task">
+            <p onClick={()=> this.toggleTask(this.props.task)}>{this.state.showtask ? 'Hide task' : `Showtask ${this.state.timeleft}`}</p>
+            { this.state.showtask ? <div>
                     <p>Status: {this.props.task.status} </p>
                     <p>Room: {this.props.task.room}</p>
                     <p>Task: {this.props.task.content} </p>
-                    <p>Time: {this.props.task.timeleft} </p>
+                    <p>Time: {Math.floor(this.props.task.timeleft/60)<10 ? `0${Math.floor(this.props.task.timeleft/60)}` :Math.floor(this.props.task.timeleft/60)}:{this.props.task.timeleft%60<10 ? `0${this.props.task.timeleft%60}`:this.props.task.timeleft%60} </p>
 
-                {(this.props.task.status!=='new') ? this.state.timeleft : <button onClick={() => this.acceptTask(this.props.task)}>Accept the task</button>}
+                {(this.props.task.status!=='new') ? '' : <button onClick={() => this.acceptTask(this.props.task)}>Accept the task</button>}
                 {(this.props.task.status==='pending' || this.props.task.status==='timesup')  ? <button onClick={() => this.finishTask(this.props.task)}>Finish the task</button> : ''}
                     
-
+</div> : ''}
             </div>
         );
     }
@@ -252,7 +258,7 @@ class UserPanel extends React.Component {
 
         return (
             <div id="user-panel">
-            <div id="new-task">{taskrender}</div>
+            <div id="new-tasks">{taskrender}</div>
             <div id="pending-tasks"></div>
             <div id="done-tasks"></div>
       </div>

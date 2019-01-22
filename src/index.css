@@ -177,7 +177,7 @@ body {
     #user-panel {
         display: flex;
         flex-flow: row wrap;
-        width: 20vw;
+       
     }
 
     #user-panel div {
@@ -186,7 +186,9 @@ body {
     }
 
 
-    .task {}
+    .task {
+        
+    }
 
     .task p {
         margin: 5px;
