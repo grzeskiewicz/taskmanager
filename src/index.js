@@ -40,7 +40,7 @@ class SelectedUserTasks extends React.Component { //split into new task form and
             if (tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
         }));
     }
-    componentWillUnmount() {}
+    componentWillUnmount() { }
 
 
 
@@ -54,18 +54,18 @@ class SelectedUserTasks extends React.Component { //split into new task form and
     render() {
         const tasklist = this.state.tasklist ? [...this.state.tasklist].map((task, index) => {
             return (
-                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{task.timeleft}</td><td>{task.status==='cancelled' ? '' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
+                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{task.timeleft}</td><td>{task.status === 'cancelled' ? '' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
             );
         }) : null;
 
         return (
             <div id="task-manager">
-            <NewTask username={this.props.username} />
-        <table id="tasks">
-        <thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Timeleft</th><th>Cancel</th></tr></thead>
-        <tbody>{tasklist}</tbody>
-        </table>
-      </div>
+                <NewTask username={this.props.username} />
+                <table id="tasks">
+                    <thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Timeleft</th><th>Cancel</th></tr></thead>
+                    <tbody>{tasklist}</tbody>
+                </table>
+            </div>
 
         );
     }
@@ -105,13 +105,13 @@ class NewTask extends React.Component { //split into new task form and tasklist
 
     render() {
         return (
-            <div id="new-task">        
-            <form  onSubmit={this.newTask}>
-            <input name='room' autoFocus placeholder='Room Place' value={this.state.room} onChange={this.handleRoom} required></input>
-            <textarea name='taskcontent' placeholder='Task to do' value={this.state.taskcontent} onChange={this.handleTaskContent} required></textarea>
-            <button type='submit'>Send task</button>
-            </form> 
-        </div>
+            <div id="new-task">
+                <form onSubmit={this.newTask}>
+                    <input name='room' autoFocus placeholder='Room Place' value={this.state.room} onChange={this.handleRoom} required></input>
+                    <textarea name='taskcontent' placeholder='Task to do' value={this.state.taskcontent} onChange={this.handleTaskContent} required></textarea>
+                    <button type='submit'>Send task</button>
+                </form>
+            </div>
 
         );
     }
@@ -124,8 +124,8 @@ class AdminPanel extends React.Component {
         this.selectUser = this.selectUser.bind(this);
 
     }
-    componentDidMount() {}
-    componentWillUnmount() {}
+    componentDidMount() { }
+    componentWillUnmount() { }
 
     selectUser(user) {
         this.setState({ username: user, active: user, tasklist: '' });
@@ -148,9 +148,9 @@ class AdminPanel extends React.Component {
 
         return (
             <div id="admin-panel">
-            <ul className="userlist">{userlist}</ul> 
-            {username ? <SelectedUserTasks username={this.state.username} /> : null}
-      </div>
+                <ul className="userlist">{userlist}</ul>
+                {username ? <SelectedUserTasks username={this.state.username} /> : null}
+            </div>
 
         );
     }
@@ -160,7 +160,7 @@ class AdminPanel extends React.Component {
 class Task extends React.Component { //single task with it's own time state
     constructor(props) {
         super(props);
-        this.state = { timeleft: '', showtask:true };
+        this.state = { timeleft: '', showtask: true };
         socket.on('countdown', (tasklist => {
             for (const taskElem of tasklist) {
                 if (taskElem.room === this.props.task.room && taskElem.content === this.props.task.content) this.setState({ timeleft: taskElem.timeleft });
@@ -180,24 +180,24 @@ class Task extends React.Component { //single task with it's own time state
         socket.emit('finish', task);
     }
 
-    toggleTask(task){
-        this.setState({showtask: !this.state.showtask});
+    toggleTask(task) {
+        this.setState({ showtask: !this.state.showtask });
     }
 
     render() {
         return (
             <div className="task">
-            <p onClick={()=> this.toggleTask(this.props.task)}>{this.state.showtask ? 'Hide task' : `Showtask ${this.state.timeleft}`}</p>
-            { this.state.showtask ? <div>
+                <p onClick={() => this.toggleTask(this.props.task)}>{this.state.showtask ? 'Hide task' : `Showtask ${this.state.timeleft}`}</p>
+                {this.state.showtask ? <div>
                     <p>Status: {this.props.task.status} </p>
                     <p>Room: {this.props.task.room}</p>
                     <p>Task: {this.props.task.content} </p>
-                    <p>Time: {Math.floor(this.props.task.timeleft/60)<10 ? `0${Math.floor(this.props.task.timeleft/60)}` :Math.floor(this.props.task.timeleft/60)}:{this.props.task.timeleft%60<10 ? `0${this.props.task.timeleft%60}`:this.props.task.timeleft%60} </p>
+                    <p>Time: {Math.floor(this.props.task.timeleft / 60) < 10 ? `0${Math.floor(this.props.task.timeleft / 60)}` : Math.floor(this.props.task.timeleft / 60)}:{this.props.task.timeleft % 60 < 10 ? `0${this.props.task.timeleft % 60}` : this.props.task.timeleft % 60} </p>
 
-                {(this.props.task.status!=='new') ? '' : <button onClick={() => this.acceptTask(this.props.task)}>Accept the task</button>}
-                {(this.props.task.status==='pending' || this.props.task.status==='timesup')  ? <button onClick={() => this.finishTask(this.props.task)}>Finish the task</button> : ''}
-                    
-</div> : ''}
+                    {(this.props.task.status !== 'new') ? '' : <button onClick={() => this.acceptTask(this.props.task)}>Accept the task</button>}
+                    {(this.props.task.status === 'pending' || this.props.task.status === 'timesup') ? <button onClick={() => this.finishTask(this.props.task)}>Finish the task</button> : ''}
+
+                </div> : ''}
             </div>
         );
     }
@@ -235,7 +235,7 @@ class UserPanel extends React.Component {
             this.setState({ tasks: tasklist });
         }));
     }
-    componentWillUnmount() {}
+    componentWillUnmount() { }
 
 
     //socket has to have name-username
@@ -258,10 +258,10 @@ class UserPanel extends React.Component {
 
         return (
             <div id="user-panel">
-            <div id="new-tasks">{taskrender}</div>
-            <div id="pending-tasks"></div>
-            <div id="done-tasks"></div>
-      </div>
+                <div id="new-tasks">{taskrender}</div>
+                <div id="pending-tasks"></div>
+                <div id="done-tasks"></div>
+            </div>
 
         );
     }
@@ -296,13 +296,13 @@ class Login extends React.Component {
 
         return (
             <div className='login'>
-         <form onSubmit={this.handleLogin}>
-            <input name='username' autoFocus placeholder='Your username' value={this.props.username} onChange={this.handleUsername} required></input>
-            <input type='password' id='password' name='password' placeholder='Password' value={this.props.password} onChange={this.handlePassword} required></input>
-            <button type='submit'>Login</button>
-        </form> 
+                <form onSubmit={this.handleLogin}>
+                    <input name='username' autoFocus placeholder='Your username' value={this.props.username} onChange={this.handleUsername} required></input>
+                    <input type='password' id='password' name='password' placeholder='Password' value={this.props.password} onChange={this.handlePassword} required></input>
+                    <button type='submit'>Login</button>
+                </form>
 
-      </div>
+            </div>
         );
     }
 }
@@ -320,9 +320,9 @@ class Logout extends React.Component {
     render() {
         const username = this.props.username;
         return (
-            <div id="userinfo"> 
-            {username} <button onClick={this.handleLogout}>Logout</button>
-      </div>
+            <div id="userinfo">
+                {username} <button onClick={this.handleLogout}>Logout</button>
+            </div>
         );
     }
 }
@@ -375,22 +375,22 @@ class Board extends React.Component {
      : login form!*/
     render() {
         return (
-            <div id="board"> 
-            { 
-            !this.state.authorised ?
-            <Login 
-            username={this.state.username} 
-            password={this.state.password} 
-            setUsername={this.setUsername} 
-            setPassword={this.setPassword} 
-            login={this.login} /> 
-            :
-            <Logout username= {this.state.username} logout={this.logout} /> 
-            }
+            <div id="board">
+                {
+                    !this.state.authorised ?
+                        <Login
+                            username={this.state.username}
+                            password={this.state.password}
+                            setUsername={this.setUsername}
+                            setPassword={this.setPassword}
+                            login={this.login} />
+                        :
+                        <Logout username={this.state.username} logout={this.logout} />
+                }
 
-            {this.state.authorised && this.state.admin===false ? <UserPanel user={this.state} /> : null } 
-            {this.state.admin ? <AdminPanel user={this.state} /> : null  }
-      </div>
+                {this.state.authorised && this.state.admin === false ? <UserPanel user={this.state} /> : null}
+                {this.state.admin ? <AdminPanel user={this.state} /> : null}
+            </div>
         );
     }
 }
