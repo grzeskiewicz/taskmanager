@@ -143,10 +143,23 @@ body {
         width: 100%;
         border-collapse: collapse;
     }
-
+   #tasks .cancel {
+        padding:0;
+    }
     #tasks td {
         border: 1px solid #ddd;
         padding: 0.7rem;
+        text-align: center;
+    }
+
+
+    #tasks .cancel button {
+        width:100%;
+        height:3rem;
+
+        padding:0;
+       
+        
     }
 
     #tasks th {
@@ -156,6 +169,8 @@ body {
         background-color: #4CAF50;
         color: white;
     }
+
+ 
 
 
     #new-task form {

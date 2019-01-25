@@ -54,7 +54,7 @@ class SelectedUserTasks extends React.Component { //split into new task form and
     render() {
         const tasklist = this.state.tasklist ? [...this.state.tasklist].map((task, index) => {
             return (
-                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{task.timeleft}</td><td>{task.status === 'cancelled' ? '' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
+                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{task.timeleft}</td><td className="cancel">{task.status === 'cancelled' || task.status === 'done' ? '-' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
             );
         }) : null;
 
@@ -156,7 +156,7 @@ class AdminPanel extends React.Component {
     }
 }
 
-// odliczanie po akceptacji - odliczanie na socket czy na kliencie?
+
 class Task extends React.Component { //single task with it's own time state
     constructor(props) {
         super(props);
@@ -184,6 +184,12 @@ class Task extends React.Component { //single task with it's own time state
         this.setState({ showtask: !this.state.showtask });
     }
 
+    parseTimeLeft(time) {
+        const minutes = Math.floor(time / 60) < 10 ? `0${Math.floor(time / 60)}` : Math.floor(time / 60);
+        const seconds = time % 60 < 10 ? `0${time % 60}` : time % 60;
+        return `${minutes}:${seconds}`;
+    }
+
     render() {
         return (
             <div className="task">
@@ -192,7 +198,7 @@ class Task extends React.Component { //single task with it's own time state
                     <p>Status: {this.props.task.status} </p>
                     <p>Room: {this.props.task.room}</p>
                     <p>Task: {this.props.task.content} </p>
-                    <p>Time: {Math.floor(this.props.task.timeleft / 60) < 10 ? `0${Math.floor(this.props.task.timeleft / 60)}` : Math.floor(this.props.task.timeleft / 60)}:{this.props.task.timeleft % 60 < 10 ? `0${this.props.task.timeleft % 60}` : this.props.task.timeleft % 60} </p>
+                    <p>Time: {this.parseTimeLeft(this.props.task.timeleft)} </p>
 
                     {(this.props.task.status !== 'new') ? '' : <button onClick={() => this.acceptTask(this.props.task)}>Accept the task</button>}
                     {(this.props.task.status === 'pending' || this.props.task.status === 'timesup') ? <button onClick={() => this.finishTask(this.props.task)}>Finish the task</button> : ''}
