@@ -15,6 +15,8 @@ class SelectedUserTasks extends React.Component { //split into new task form and
         this.state = { tasklist: '' };
 
     }
+
+
     componentDidMount() {
         socket.on('usertasks', (tasklist => {
             if (tasklist[0] && tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
@@ -22,6 +24,11 @@ class SelectedUserTasks extends React.Component { //split into new task form and
         }));
 
         socket.on('timesup', (tasklist => {
+            if (tasklist[0] && tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
+
+        }));
+
+        socket.on('overdue', (tasklist => {
             if (tasklist[0] && tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
 
         }));
@@ -43,7 +50,11 @@ class SelectedUserTasks extends React.Component { //split into new task form and
     componentWillUnmount() { }
 
 
-
+    parseTimeLeft(time) {
+        const minutes = Math.floor(time / 60) < 10 ? `0${Math.floor(time / 60)}` : Math.floor(time / 60);
+        const seconds = time % 60 < 10 ? `0${time % 60}` : time % 60;
+        return `${minutes}:${seconds}`;
+    }
 
 
     cancelTask(task) {
@@ -53,8 +64,9 @@ class SelectedUserTasks extends React.Component { //split into new task form and
 
     render() {
         const tasklist = this.state.tasklist ? [...this.state.tasklist].map((task, index) => {
+            console.log(task);
             return (
-                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{task.timeleft}</td><td className="cancel">{task.status === 'cancelled' || task.status === 'done' ? '-' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
+                <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{this.parseTimeLeft(task.timetoaccept)}</td><td>{this.parseTimeLeft(task.timeleft)}</td><td className="cancel">{task.status === 'cancelled' || task.status === 'done' ? '-' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
             );
         }) : null;
 
@@ -62,7 +74,7 @@ class SelectedUserTasks extends React.Component { //split into new task form and
             <div id="task-manager">
                 <NewTask username={this.props.username} />
                 <table id="tasks">
-                    <thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Timeleft</th><th>Cancel</th></tr></thead>
+                    <thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Time to accept</th><th>Timeleft</th><th>Cancel</th></tr></thead>
                     <tbody>{tasklist}</tbody>
                 </table>
             </div>
@@ -160,10 +172,11 @@ class AdminPanel extends React.Component {
 class Task extends React.Component { //single task with it's own time state
     constructor(props) {
         super(props);
-        this.state = { timeleft: '', showtask: true };
+        this.state = { timetoaccept: '', timeleft: '', showtask: true };
         socket.on('countdown', (tasklist => {
             for (const taskElem of tasklist) {
                 if (taskElem.room === this.props.task.room && taskElem.content === this.props.task.content) this.setState({ timeleft: taskElem.timeleft });
+                if (taskElem.status === "new") this.setState({ timetoaccept: taskElem.timetoaccept });
             }
         }));
 
@@ -193,11 +206,12 @@ class Task extends React.Component { //single task with it's own time state
     render() {
         return (
             <div className="task">
-                <p onClick={() => this.toggleTask(this.props.task)}>{this.state.showtask ? 'Hide task' : `Showtask ${this.state.timeleft}`}</p>
+                <p onClick={() => this.toggleTask(this.props.task)}>{this.state.showtask ? 'Hide task' : `Showtask ${this.parseTimeLeft(this.state.timeleft)}`}</p>
                 {this.state.showtask ? <div>
                     <p>Status: {this.props.task.status} </p>
                     <p>Room: {this.props.task.room}</p>
                     <p>Task: {this.props.task.content} </p>
+                    <p>Time to accept: {this.parseTimeLeft(this.props.task.timetoaccept)} </p>
                     <p>Time: {this.parseTimeLeft(this.props.task.timeleft)} </p>
 
                     {(this.props.task.status !== 'new') ? '' : <button onClick={() => this.acceptTask(this.props.task)}>Accept the task</button>}
@@ -217,6 +231,7 @@ class UserPanel extends React.Component {
     }
     componentDidMount() {
         socket.on('taskreceived', (task => {
+            console.log(task);
             this.setState({ tasks: this.state.tasks.concat(task) });
         }));
 
@@ -254,19 +269,39 @@ class UserPanel extends React.Component {
     //admin-selects user->create task, delete task->info sent via socket
     // when receiving task->ALERT TO PHONE or SMS(?)
     // task when done->send info to admin
+
+mapTasks (taskStatus) {
+
+}
+
     render() {
         const tasks = this.state.tasks;
-        const taskrender = tasks.map((task, index) => {
+        const tab=[];
+        for (let task of tasks){
+            if (tab[task['status']] === undefined) tab[task.status] = [];
+            tab[task.status].push(task);
+        }
+
+
+
+        const newTasksRender = tab['new'] ? tab['new'].map((task, index) => { // POPRAWIĆ
             return (
                 <Task key={index} task={task} />
             );
-        });
+        }): '';
+
+
+        const doneTasksRender = tab['done'] ? tab['done'].map((task, index) => {
+            return (
+                <Task key={index} task={task} />
+            );
+        }): '';
 
         return (
             <div id="user-panel">
-                <div id="new-tasks">{taskrender}</div>
+                <div id="new-tasks">{newTasksRender}</div>
                 <div id="pending-tasks"></div>
-                <div id="done-tasks"></div>
+                <div id="done-tasks">{doneTasksRender}</div>
             </div>
 
         );
