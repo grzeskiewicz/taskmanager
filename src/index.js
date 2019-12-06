@@ -46,6 +46,11 @@ class SelectedUserTasks extends React.Component { //split into new task form and
         socket.on('cancelled', (tasklist => {
             if (tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
         }));
+
+
+        socket.on('userlogout', (username => {
+            console.log(this.props.username, username);
+        }));
     }
     componentWillUnmount() { }
 
@@ -64,7 +69,7 @@ class SelectedUserTasks extends React.Component { //split into new task form and
 
     render() {
         const tasklist = this.state.tasklist ? [...this.state.tasklist].map((task, index) => {
-            console.log(task);
+            //console.log(task);
             return (
                 <tr key={index}><td>{task.room}</td><td>{task.content}</td><td>{task.status}</td><td>{this.parseTimeLeft(task.timetoaccept)}</td><td>{this.parseTimeLeft(task.timeleft)}</td><td className="cancel">{task.status === 'cancelled' || task.status === 'done' ? '-' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td></tr>
             );
@@ -136,7 +141,19 @@ class AdminPanel extends React.Component {
         this.selectUser = this.selectUser.bind(this);
 
     }
-    componentDidMount() { }
+    componentDidMount() {
+
+        //let allUsers=this.getAllUsers();
+        socket.on('userlist', (async (msg) => {
+            console.log('Socketttt');
+            const hehe = await this.getAllUsers(msg);
+            console.log(msg.userlist);
+            console.log(hehe);
+            //this.setState({ userlist: msg.userlist })
+        }));
+
+
+    }
     componentWillUnmount() { }
 
     selectUser(user) {
@@ -144,12 +161,27 @@ class AdminPanel extends React.Component {
         socket.emit('gettasks', user);
     }
 
+    getAllUsers(msg) {
+        return authServices.getUsers().then(res => {
+            const allUsersActivity = [];
+            for (const user of res) {
+                allUsersActivity.push({ username: user, online: false });
+            }
+            for (const user of allUsersActivity) {
+                for (const userFromSocket of msg.userlist) {
+                    if (user.username === userFromSocket) {
+                        user.online = true;
+                    }
+                }
+            }
+            return allUsersActivity;
+        });
+
+
+    }
+
     render() {
         let username = this.state.username;
-
-        socket.on('userlist', (msg => {
-            this.setState({ userlist: msg.userlist })
-        }));
 
         const userlist = String(this.state.userlist).split(',').map((user, index) => {
             return (
@@ -162,8 +194,66 @@ class AdminPanel extends React.Component {
             <div id="admin-panel">
                 <ul className="userlist">{userlist}</ul>
                 {username ? <SelectedUserTasks username={this.state.username} /> : null}
+                <div><UserCreator /></div>
             </div>
 
+        );
+    }
+}
+
+
+class UserCreator extends React.Component {
+    constructor(props) {
+        super(props);
+        this.newUser = this.newUser.bind(this);
+        this.handleUsername = this.handleUsername.bind(this);
+        this.handlePassword = this.handlePassword.bind(this);
+        this.state = { username: '', password: '' };
+
+    }
+    componentDidMount() { }
+    componentWillUnmount() { }
+
+    handleUsername(event) {
+        this.setState({ username: event.target.value });
+    }
+
+    handlePassword(event) {
+        this.setState({ password: event.target.value });
+    }
+
+    newUser(event) {
+        event.preventDefault();
+        const user = {
+            username: this.state.username,
+            password: this.state.password,
+            role: "user"
+        };
+        authServices.register(user)
+            .then(res => {
+                if (res.success) {
+                    console.log(res, "User created");
+                } else {
+
+                }
+            });
+
+        console.log(user);
+
+        event.target.reset();
+        this.setState({ username: '', password: '' });
+
+    }
+
+    render() {
+        return (
+            <div>
+                <form onSubmit={this.newUser}>
+                    <input name='username' autoFocus placeholder='Username' value={this.state.room} onChange={this.handleUsername} required></input>
+                    <input name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
+                    <button type='submit'>Create user</button>
+                </form>
+            </div>
         );
     }
 }
@@ -173,15 +263,21 @@ class Task extends React.Component { //single task with it's own time state
     constructor(props) {
         super(props);
         this.state = { timetoaccept: '', timeleft: '', showtask: true };
-        socket.on('countdown', (tasklist => {
-            for (const taskElem of tasklist) {
-                if (taskElem.room === this.props.task.room && taskElem.content === this.props.task.content) this.setState({ timeleft: taskElem.timeleft });
-                if (taskElem.status === "new") this.setState({ timetoaccept: taskElem.timetoaccept });
-            }
-        }));
+    }
+
+    componentDidMount() {
+        if (this._isMounted) socket.on('countdown', (tasklist => this.countDown(tasklist)));
+    }
+    componentWillUnmount() {
+        //    socket.off('countdown',(tasklist => this.countDown(tasklist)));
+    }
 
 
-
+    countDown(tasklist) {
+        for (const taskElem of tasklist) {
+            if (taskElem.room === this.props.task.room && taskElem.content === this.props.task.content) this.setState({ timeleft: taskElem.timeleft });
+            if (taskElem.status === "new") this.setState({ timetoaccept: taskElem.timetoaccept });
+        }
     }
     acceptTask(task) {
         socket.emit('accept', task);
@@ -232,10 +328,12 @@ class UserPanel extends React.Component {
     componentDidMount() {
         socket.on('taskreceived', (task => {
             console.log(task);
+            // if (this._isMounted) 
             this.setState({ tasks: this.state.tasks.concat(task) });
         }));
 
         socket.on('usertasks', (tasklist => {
+            //if (this._isMounted) 
             this.setState({ tasks: tasklist });
         }));
         socket.on('timesup', (tasklist => {
@@ -253,10 +351,39 @@ class UserPanel extends React.Component {
         }));
 
         socket.on('cancelled', (tasklist => {
+            //if (this._isMounted) 
             this.setState({ tasks: tasklist });
         }));
     }
-    componentWillUnmount() { }
+    componentWillUnmount() {
+        /* socket.off('taskreceived', (task => {
+             console.log(task);
+             this.setState({ tasks: this.state.tasks.concat(task) });
+         }));
+ 
+         socket.off('usertasks', (tasklist => {
+             this.setState({ tasks: tasklist });
+         }));
+         socket.off('timesup', (tasklist => {
+             this.setState({ tasks: tasklist });
+ 
+         }));
+ 
+         socket.off('countdown', (tasklist => {
+             this.setState({ tasks: tasklist });
+ 
+         }));
+ 
+         socket.off('userfinished', (tasklist => {
+             this.setState({ tasks: tasklist });
+         }));
+ 
+         socket.off('cancelled', (tasklist => {
+             this.setState({ tasks: tasklist });
+         }));
+ */
+
+    }
 
 
     //socket has to have name-username
@@ -270,37 +397,46 @@ class UserPanel extends React.Component {
     // when receiving task->ALERT TO PHONE or SMS(?)
     // task when done->send info to admin
 
-mapTasks (taskStatus) {
+    mapTasks(taskStatus) {
 
-}
+    }
 
     render() {
         const tasks = this.state.tasks;
-        const tab=[];
-        for (let task of tasks){
+        const tab = [];
+        for (let task of tasks) {
             if (tab[task['status']] === undefined) tab[task.status] = [];
             tab[task.status].push(task);
         }
 
+        console.log(tab);
 
-
-        const newTasksRender = tab['new'] ? tab['new'].map((task, index) => { // POPRAWIĆ
+        let newTasksRender = tab['new'] !== undefined ? tab['new'].map((task, index) => { // POPRAWIĆ
             return (
                 <Task key={index} task={task} />
             );
-        }): '';
+        }) : '';
 
 
-        const doneTasksRender = tab['done'] ? tab['done'].map((task, index) => {
+        let doneTasksRender = tab['done'] !== undefined ? tab['done'].map((task, index) => {
+
             return (
                 <Task key={index} task={task} />
             );
-        }): '';
+        }) : '';
+
+
+        let pendingTasksRender = tab['pending'] !== undefined ? tab['pending'].map((task, index) => {
+            console.log(task);
+            return (
+                <Task key={index} task={task} />
+            );
+        }) : '';
 
         return (
             <div id="user-panel">
                 <div id="new-tasks">{newTasksRender}</div>
-                <div id="pending-tasks"></div>
+                <div id="pending-tasks">{pendingTasksRender}</div>
                 <div id="done-tasks">{doneTasksRender}</div>
             </div>
 

@@ -37,7 +37,7 @@ export const authServices = {
 
     register(user) {
         console.log(JSON.stringify(user));
-        return fetch(request(`${API_URL}registertest`, 'POST', user))
+        return fetch(request(`${API_URL}/createuser`, 'POST', user))
             .then(res => res.json())
             .then(result => result)
             .catch(error => Promise.reject(new Error(error))); //Promise.reject(new Error(error))       
@@ -60,9 +60,15 @@ export const authServices = {
         return fetch(request(`${API_URL}/memberinfo`, 'GET'))
             .then(res => res.json())
             .then(result => {
-                console.log(result)
+             //   console.log(result)
                 return result;
             });
+    },
+
+    getUsers() {
+        return fetch(request(`${API_URL}/getusers`, 'GET'))
+            .then(res => res.json())
+            .then(result => result );
     },
 
     logout() {
