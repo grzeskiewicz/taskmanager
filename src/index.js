@@ -137,7 +137,7 @@ class NewTask extends React.Component { //split into new task form and tasklist
 class AdminPanel extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { username: '' };
+        this.state = { username: '', userStats: '' };
         this.selectUser = this.selectUser.bind(this);
 
     }
@@ -146,10 +146,7 @@ class AdminPanel extends React.Component {
         //let allUsers=this.getAllUsers();
         socket.on('userlist', (async (msg) => {
             console.log('Socketttt');
-            const hehe = await this.getAllUsers(msg);
-            console.log(msg.userlist);
-            console.log(hehe);
-            //this.setState({ userlist: msg.userlist })
+            this.setState({ userStats: await this.getAllUsers(msg) });
         }));
 
 
@@ -182,12 +179,27 @@ class AdminPanel extends React.Component {
 
     render() {
         let username = this.state.username;
+        let userStats = this.state.userStats;
+        let userStatsMap;
 
         const userlist = String(this.state.userlist).split(',').map((user, index) => {
             return (
                 <li key={index} className={this.state.active === user ? 'active' : ''} onClick={() => this.selectUser(user)}>{user}</li>
             );
         });
+        if (userStats !== undefined) {
+
+        userStatsMap = this.state.userStats.map((user, index) => {
+
+            console.log(user);
+            // console.log(this.state.userStats);
+            return (
+                <div></div>
+                // <li key={index} className={this.state.active === user ? 'active' : ''} onClick={() => this.selectUser(user)}>{user}</li>
+            );
+        });
+
+    }
 
 
         return (
