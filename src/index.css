@@ -1,16 +1,16 @@
 * {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    box-sizing: border-box;
-    font-size: 12px;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+  font-size: 12px;
 }
 
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    margin: 0;
+  margin: 0;
 }
 
 /* MOBILE SETUP */
@@ -24,9 +24,6 @@ body {
     flex: 1 100%;
 }
 */
-
-
-
 
 /* TASKS ON ADMIN PANEL */
 /*
@@ -54,8 +51,6 @@ body {
     flex-flow: row wrap;
 }*/
 
-
-
 /* TASKS ON USER PANEL */
 /*
 #user-panel {
@@ -78,155 +73,214 @@ body {
 }
 */
 
-
 /* ========================================DESKTOP SETUP===========================================*/
 @media only screen and (min-width: 768px) {
-    #root {
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        display: -webkit-box;
-        display: -moz-box;
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        /* align-items: center; */
-        justify-content: center;
-    }
+  #root {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+  }
 
-    #board {
-        height: 100%;
-        flex-basis: 30vw;
-        border: 1px solid blue;
-    }
+  #board {
+    height: 100%;
+    flex-basis: 70vw;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    border: 1px solid blue;
+  }
 
+  #userinfo {
+    flex-basis: 5%;
+  }
 
-    .login {
-        display: flex;
-        justify-content: center;
+  .login {
+    display: flex;
+    flex: 1 100%;
+    flex-flow: row nowrap;
+    justify-content: center;
+  }
 
-    }
+  .login form {
+    display: flex;
+    flex:0 0 30%;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
 
-    .login form {
-        display: flex;
-        flex-flow: row wrap;
-        flex-basis: 60%;
-    }
+  .login form > * {
+    flex:0 0 3%;
+   
+  }
 
+  #admin-panel {
+    flex-basis: 95%;
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row nowrap;
+  }
 
-    .login form>* {
-        flex: 1 100%;
-    }
+  #task-manager-wrapper {
+    flex: 0 0 50%;
+  }
 
+  #user-manager {
+    flex: 0 0 40%;
+  }
 
-    #admin-panel {}
+  .userlist {
+    width: 50%;
+  }
 
+  /* TASKS ON ADMIN PANEL */
+  #task-manager {
+    display: flex;
+    justify-content: center;
+    align-content: space-around;
+    flex-flow: row wrap;
+  }
 
+  #tasks {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  #tasks .cancel {
+    padding: 0;
+  }
+  #tasks td {
+    border: 1px solid #ddd;
+    padding: 0.7rem;
+    text-align: center;
+  }
 
-    .userlist {
-        width: 50%;
-    }
+  #tasks .cancel button {
+    width: 100%;
+    height: 3rem;
 
+    padding: 0;
+  }
 
+  #tasks th {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    text-align: center;
+    background-color: #4caf50;
+    color: white;
+  }
 
+  #userSelectionCreateTask-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    border: solid 1px red;
+  }
 
+  #userlist {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1 40%;
+  }
+  #userlist ul {
+    margin: 0;
+    padding: 0;
+  }
+  #userlist li {
+    list-style: none; /* Remove default bullets */
+    vertical-align: middle;
+    font-size: 1.3rem;
+  }
 
-    /* TASKS ON ADMIN PANEL */
-    #task-manager {
-        display: flex;
-        justify-content: center;
-        align-content: space-around;
-        flex-flow: row wrap;
-    }
+  #userlist .selected {
+    background: grey;
+  }
 
-    #tasks {
-        width: 100%;
-        border-collapse: collapse;
-    }
-   #tasks .cancel {
-        padding:0;
-    }
-    #tasks td {
-        border: 1px solid #ddd;
-        padding: 0.7rem;
-        text-align: center;
-    }
+  #userlist li.online::before {
+    content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+    color: green; /* Change the color */
+    font-weight: bold; /* If you want it to be bold */
+    display: inline-block; /* Needed to add space between the bullet and the text */
+    width: 3rem; /* Also needed for space (tweak if needed) */
+    font-size: 4rem;
+    padding: 0;
+    text-align: center;
+    border: solid 1px black;
+  }
 
+  #userlist li.offline::before {
+    content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+    color: red; /* Change the color */
+    font-weight: bold; /* If you want it to be bold */
+    display: inline-block; /* Needed to add space between the bullet and the text */
+    width: 3rem; /* Also needed for space (tweak if needed) */
+    font-size: 4rem;
+    padding: 0;
 
-    #tasks .cancel button {
-        width:100%;
-        height:3rem;
+    text-align: center;
+    border: solid 1px black;
+  }
 
-        padding:0;
-       
-        
-    }
+  #create-task {
+    flex: 1 60%;
+  }
 
-    #tasks th {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        text-align: center;
-        background-color: #4CAF50;
-        color: white;
-    }
+  #create-task form {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+  }
 
- 
+  #create-task form > * {
+    flex-grow: 1;
+  }
 
+  #create-task form textarea {
+    flex-grow: 4;
+  }
 
-    #new-task form {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
-    }
+  #user-creator form {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
 
-    #new-task form>* {
-        flex-basis: 70%;
-    }
+  /* TASKS ON USER PANEL */
+  #user-panel {
+    display: flex;
+    flex-flow: row nowrap;
+  }
 
+  #user-panel div {
+    flex: 1 50%;
+    border: 1px solid grey;
+  }
 
+  .task {
+  }
 
-
-
-
-    /* TASKS ON USER PANEL */
-    #user-panel {
-        display: flex;
-        flex-flow: row wrap;
-       
-    }
-
-    #user-panel div {
-        flex: 1 100%;
-        border: 3px solid grey;
-    }
-
-
-    .task {
-        
-    }
-
-    .task p {
-        margin: 5px;
-    }
-
-
+  .task p {
+    margin: 5px;
+  }
 }
-
-
-
-
-
 
 .new {
-    background: yellow;
+  background: yellow;
 }
-
 
 .done {
-    background: grey;
+  background: grey;
 }
 
-
-.userlist .active {
-    background: grey;
+/*
+#userlist .online {
+  border: 1px solid green;
 }
+
+#userlist .offline {
+  border: 1px solid red;
+} */

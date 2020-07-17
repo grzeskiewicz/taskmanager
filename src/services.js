@@ -36,7 +36,7 @@ export const authServices = {
     },
 
     register(user) {
-        console.log(JSON.stringify(user));
+      //  console.log(JSON.stringify(user));
         return fetch(request(`${API_URL}/createuser`, 'POST', user))
             .then(res => res.json())
             .then(result => result)
@@ -48,7 +48,7 @@ export const authServices = {
         return fetch(request(`${API_URL}/authuser`, 'POST', user))
             .then(res => res.json())
             .then(result => {
-                console.log(user, result);
+                console.log(result);
                 if (result.success) { // result.ok?
                     this.storeUserCredentials(result.token);
                     return result;
@@ -60,7 +60,7 @@ export const authServices = {
         return fetch(request(`${API_URL}/memberinfo`, 'GET'))
             .then(res => res.json())
             .then(result => {
-             //   console.log(result)
+                  console.log(result)
                 return result;
             });
     },
@@ -68,7 +68,7 @@ export const authServices = {
     getUsers() {
         return fetch(request(`${API_URL}/getusers`, 'GET'))
             .then(res => res.json())
-            .then(result => result );
+            .then(result => result);
     },
 
     logout() {
