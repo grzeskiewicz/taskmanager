@@ -1,145 +1,58 @@
-* {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  box-sizing: border-box;
-  font-size: 12px;
-}
-
-html,
-body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-}
-
-/* MOBILE SETUP */
-/*
-.login form {
-    display: flex;
-    flex-flow: row wrap;
-}
-
-.login form>* {
-    flex: 1 100%;
-}
-*/
-
-/* TASKS ON ADMIN PANEL */
-/*
-#tasks {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-#tasks td,
-#tasks th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-#tasks th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
-}
-
-#new-task {
-    display: flex;
-    flex-flow: row wrap;
-}*/
-
-/* TASKS ON USER PANEL */
-/*
-#user-panel {
-    display: flex;
-    flex-flow: row wrap;
-}
-
-#user-panel div {
-    flex: 1 100%;
-    border: 1px solid grey;
-}
-
-
-
-.task {}
-
-.task p {
-    margin: 0px;
-    font-size: 0.8rem;
-}
-*/
-
-/* ========================================DESKTOP SETUP===========================================*/
 @media only screen and (min-width: 768px) {
-  #root {
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    /* align-items: center; */
-    justify-content: center;
-  }
-
-  #board {
-    height: 100%;
-    flex-basis: 70vw;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-start;
-    border: 1px solid blue;
-  }
-
-  #userinfo {
-    flex-basis: 5%;
-  }
-
-  .login {
-    display: flex;
-    flex: 1 100%;
-    flex-flow: row nowrap;
-    justify-content: center;
-  }
-
-  .login form {
-    display: flex;
-    flex:0 0 30%;
-    flex-flow: column nowrap;
-    justify-content: center;
-  }
-
-  .login form > * {
-    flex:0 0 3%;
-   
-  }
-
   #admin-panel {
     flex-basis: 95%;
     display: flex;
-    justify-content: space-between;
     flex-flow: row nowrap;
   }
 
+  /* ======================================= */
+
+  #menu {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 0 0 15%;
+    border: 1px solid red;
+  }
+
+  #menu > div {
+    cursor: pointer;
+    border: 1px solid green;
+    border-radius: 4px;
+    box-shadow: 5px 5px 5px grey;
+    flex-basis: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  #menu > div:hover{
+    background-color: lightgrey;
+  }
+
   #task-manager-wrapper {
-    flex: 0 0 50%;
+    flex: 0 0 30%;
+    border: 2px solid green;
   }
 
   #user-manager {
-    flex: 0 0 40%;
+    flex: 0 0 30%;
+
+    border: 2px solid green;
+  }
+
+  #user-manager > * {
+    margin-bottom: 1rem;
+  }
+
+  #showUserCreator {
+    width: 100%;
   }
 
   .userlist {
     width: 50%;
   }
 
-  /* TASKS ON ADMIN PANEL */
   #task-manager {
     display: flex;
     justify-content: center;
@@ -174,6 +87,8 @@ body {
     background-color: #4caf50;
     color: white;
   }
+
+  /* ======================================= */
 
   #userSelectionCreateTask-wrapper {
     display: flex;
@@ -230,7 +145,7 @@ body {
   }
 
   #create-task form {
-    height: 100%;
+    height: 60%;
     display: flex;
     flex-flow: column nowrap;
   }
@@ -249,38 +164,21 @@ body {
     justify-content: center;
   }
 
-  /* TASKS ON USER PANEL */
-  #user-panel {
+  #user-creator > p {
+    margin: 0;
+    text-align: right;
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+
+  /* ======================================= */
+
+  #reports {
+    flex: 0 40%;
     display: flex;
-    flex-flow: row nowrap;
   }
 
-  #user-panel div {
-    flex: 1 50%;
-    border: 1px solid grey;
-  }
-
-  .task {
-  }
-
-  .task p {
-    margin: 5px;
+  #tasksPerStatus {
+    text-transform: capitalize;
   }
 }
-
-.new {
-  background: yellow;
-}
-
-.done {
-  background: grey;
-}
-
-/*
-#userlist .online {
-  border: 1px solid green;
-}
-
-#userlist .offline {
-  border: 1px solid red;
-} */

@@ -31,25 +31,24 @@ class UserCreator extends React.Component {
         authServices.register(user)
             .then(res => {
                 if (res.success) {
-                    console.log(res, "User created");
+                    this.props.showUserCreator();
                 } else {
 
                 }
             });
-
-        console.log(user);
-
-        event.target.reset();
         this.setState({ username: '', password: '' });
+        event.target.reset();
+
 
     }
 
     render() {
         return (
             <div id="user-creator">
+                <p onClick={this.props.showUserCreator()}>&#9650;</p>
                 <form onSubmit={this.newUser}>
                     <input name='username' autoFocus placeholder='Username' value={this.state.room} onChange={this.handleUsername} required></input>
-                    <input name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
+                    <input name='password' type="password" placeholder='Password' value={this.state.password} onChange={this.handlePassword} required></input>
                     <button type='submit'>Create user</button>
                 </form>
             </div>

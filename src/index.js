@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './css/index.css';
 import AdminPanel from './AdminPanel';
 import UserPanel from './UserPanel';
 import { Login, Logout } from './User';

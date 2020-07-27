@@ -36,7 +36,7 @@ export const authServices = {
     },
 
     register(user) {
-      //  console.log(JSON.stringify(user));
+        //  console.log(JSON.stringify(user));
         return fetch(request(`${API_URL}/createuser`, 'POST', user))
             .then(res => res.json())
             .then(result => result)
@@ -60,7 +60,7 @@ export const authServices = {
         return fetch(request(`${API_URL}/memberinfo`, 'GET'))
             .then(res => res.json())
             .then(result => {
-                  console.log(result)
+                console.log(result)
                 return result;
             });
     },
@@ -73,6 +73,21 @@ export const authServices = {
 
     logout() {
         this.destroyUserCredentials();
+    },
+    deleteUser(user) {
+        console.log("delete", user);
+        return fetch(request(`${API_URL}/deleteuser`, 'POST', { 'user': user }))
+            .then(res => res.json())
+            .then(result => result)
+            .catch(error => Promise.reject(new Error(error)));
+    },
+
+
+    resetPassword(user) {
+        return fetch(request(`${API_URL}/resetpassword`, 'POST', user))
+            .then(res => res.json())
+            .then(result => result)
+            .catch(error => Promise.reject(new Error(error)));
     }
 
 }
