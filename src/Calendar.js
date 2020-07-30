@@ -131,9 +131,9 @@ class Calendar extends React.Component {
         <div id="calendar-head">
           <div id="year-selection"><p>{this.state.selectedYear}</p></div>
           <div id="month-selection">
-            <span className={this.state.selectedMonth === 0 ? 'hidden' : ''} onClick={() => this.changeMonth(-1)}>{"<<"}</span>
-            <p id="month-name" colSpan="7" onClick={()=> this.handleMonthSelection()}>{MONTH_NAMES[this.state.selectedMonth]}</p>
-            <span className={this.state.selectedMonth === monthNow ? 'hidden' : ''} onClick={() => this.changeMonth(1)}>{">>"}</span>
+            <figure className={this.state.selectedMonth === 0 ? 'hidden' : ''} onClick={() => this.changeMonth(-1)}>{"<<"}</figure>
+            <p id="month-name" onClick={()=> this.handleMonthSelection()}>{MONTH_NAMES[this.state.selectedMonth]}</p>
+            <figure className={this.state.selectedMonth === monthNow ? 'hidden' : ''} onClick={() => this.changeMonth(1)}>{">>"}</figure>
           </div>
           <div id="day-names">{week}</div>
         </div>

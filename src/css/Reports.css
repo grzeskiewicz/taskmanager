@@ -1,0 +1,74 @@
+@media only screen and (min-width: 768px) {
+  #reports {
+    flex: 0 70%;
+    display: flex;
+  }
+
+  #summary-report {
+    flex: 0 65%;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  #summary-report > * {
+    flex: 0 40%;
+  }
+  /* ===================================== */
+  #daily-report {
+  }
+
+  legend {
+    font-weight: bold;
+  }
+
+  #tasksPerStatus p:last-child {
+    border-top: 1px solid black;
+    margin: 0;
+  }
+
+  #tasksPerStatus {
+    text-transform: capitalize;
+  }
+
+  #tasksPerStatus p {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+
+  #userStatistics p {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+
+  /* ===================================== */
+
+  #monthly-report {
+  }
+
+  #monthly-report > p {
+    text-align: center;
+  }
+
+  #tasksPerStatusMonth {
+    text-transform: capitalize;
+  }
+
+  #tasksPerStatusMonth p {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+
+  #tasksPerStatusMonth p:last-child {
+    border-top: 1px solid black;
+    margin: 0;
+  }
+
+  #userStatisticsMonth p {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+}

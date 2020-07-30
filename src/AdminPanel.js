@@ -1,9 +1,8 @@
 import React from 'react';
 import socket from './User'
 import './css/adminPanel.css';
-import Calendar from './Calendar';
+import Reports from './Reports';
 import { authServices } from './services.js';
-import { API_URL, request } from './apiconnection.js'; //request
 import UserCreator from './UserCreator';
 import UserEditor from './UserEditor';
 import CreateTask from './CreateTask';
@@ -71,7 +70,10 @@ class AdminPanel extends React.Component {
             userStatsMap = this.state.userStats.map((user, index) => {
                 console.log(user);
                 return (
-                    <li key={index} className={(this.state.selectedUsername === user.username ? 'selected' : '') + " " + (user.online === true ? 'online' : 'offline')} onClick={() => this.selectUser(user)}>{user.username}</li>
+                    <li key={index} className={(this.state.selectedUsername === user.username ? 'selected' : '')} onClick={() => this.selectUser(user)}>
+                        <figure className={(user.online === true ? 'online' : 'offline')}>&bull;</figure>
+                        {user.username}
+                    </li>
                 );
             });
 
@@ -86,11 +88,13 @@ class AdminPanel extends React.Component {
 
                 {this.state.showMenu === 1 ?
                     <div id="task-manager-wrapper">
-                        <div id="userSelectionCreateTask-wrapper">
-                            <div id="userlist"><ul>{userStatsMap}</ul></div>
-                            {selectedUsername !== '' ? <CreateTask username={this.state.selectedUsername} /> : null}
-                        </div>
-                        {selectedUsername !== '' ? <SelectedUserTasks username={this.state.selectedUsername} /> : null}
+                        <div id="userlist"><ul>{userStatsMap}</ul></div>
+                        {selectedUsername !== '' ?
+                            <div id="task-div">
+                                <CreateTask username={this.state.selectedUsername} />
+                                <SelectedUserTasks username={this.state.selectedUsername} />
+                            </div>
+                            : null}
                     </div>
                     : ''}
 
@@ -156,6 +160,13 @@ class SelectedUserTasks extends React.Component { //split into new task form and
         }));
 
 
+        socket.on('reset', (tasklist => {
+            if (tasklist[0].username === this.props.username) this.setState({ tasklist: tasklist });
+            console.log('reset', this.state);
+
+        }));
+
+
         socket.on('userlogout', (username => {
             console.log(this.props.username, username);
         }));
@@ -175,6 +186,10 @@ class SelectedUserTasks extends React.Component { //split into new task form and
         socket.emit('cancel', task);
     }
 
+    resetTask(task) {
+        socket.emit('reset', task);
+    }
+
 
     render() {
         const tasklist = this.state.tasklist ? [...this.state.tasklist].map((task, index) => {
@@ -186,7 +201,7 @@ class SelectedUserTasks extends React.Component { //split into new task form and
                     <td>{this.parseTimeLeft(task.timetoaccept)}</td>
                     <td>{this.parseTimeLeft(task.timeleft)}</td>
                     <td className="cancel">{task.status === 'cancelled' || task.status === 'done' ? '-' : <button onClick={() => this.cancelTask(task)}>Cancel</button>}</td>
-                    <td><button onClick={() => this.restartTask(task)}>Restart</button></td>
+                    <td className="reset">{task.status === 'overdue' || task.status === 'timeup' ? <button onClick={() => this.resetTask(task)}>Reset</button> : '-'}</td>
                 </tr>
             );
         }) : null;
@@ -194,7 +209,7 @@ class SelectedUserTasks extends React.Component { //split into new task form and
         return (
             <div id="task-manager">
                 <table id="tasks">
-                    <thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Time to accept</th><th>Timeleft</th><th>Cancel</th><th>Restart</th></tr></thead>
+                    <thead><tr><th>Room</th><th>Content</th><th>Status</th><th>Time to accept</th><th>Timeleft</th><th>Cancel</th><th>Reset</th></tr></thead>
                     <tbody>{tasklist}</tbody>
                 </table>
             </div>
@@ -204,149 +219,6 @@ class SelectedUserTasks extends React.Component { //split into new task form and
 }
 
 
-class Reports extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { tasks: '', tasksSelectedMonth: '' };
-        this.handleDaySelection = this.handleDaySelection.bind(this);
-        this.handleMonthSelection = this.handleMonthSelection.bind(this);
-    }
-
-    componentDidMount() {
-    }
-
-    handleMonthSelection(month, year) {
-
-        fetch(request(`${API_URL}/gettasksmonth`, 'POST', { month: month, year: year }))
-            .then(res => res.json())
-            .then(result => {
-                console.log(result.tasks);
-                this.setState({ tasksSelectedMonth: result.tasks });
-            })
-            .catch(error => Promise.reject(new Error(error)));
-    }
-
-    handleDaySelection(date) {
-
-        fetch(request(`${API_URL}/gettasksday`, 'POST', { date: date }))
-            .then(res => res.json())
-            .then(result => {
-                this.setState({ tasks: result.tasks });
-            })
-            .catch(error => Promise.reject(new Error(error)));
-    }
-
-    render() {
-        let summaryReport = 'X';
-        let summaryReportTab = [];
-        let tasksOfUser = [];
-        let totalAmount = 0;
-        let statusTaskAmount = '';
-        let userStatistics = '';
-
-        let monthlyTaskAmount = 0;
-        let summaryReportTabMonth = [];
-        let tasksOfUserMonth = [];
-        let statusTaskAmountMonth = '';
-        let userStatisticsMonth = '';
-
-
-        if (this.state.tasks !== '') {
-            totalAmount = this.state.tasks.length;
-
-            for (const task of this.state.tasks) {
-                if (summaryReportTab[task.status] === undefined) summaryReportTab[task.status] = [];
-                summaryReportTab[task.status].push(task);
-
-                if (tasksOfUser[task.username] === undefined) tasksOfUser[task.username] = [];
-                tasksOfUser[task.username].push(task);
-            }
-
-
-
-            statusTaskAmount = Object.entries(summaryReportTab).map((obj, index) => {
-                return (
-                    <p key={index}>{obj[0]}:{obj[1].length}</p>
-                );
-            });
-
-
-
-            userStatistics = Object.entries(tasksOfUser).map((obj, index) => {
-                return (
-                    <p key={index}>{obj[0]}:{obj[1].length}</p>
-                );
-            });
-
-
-
-            for (const obj of Object.entries(tasksOfUser)) { // sort every users task to the groups of status
-                //  obj[1]; -all the users's task, sort em
-
-
-            }
-
-            /*  summaryReport = this.state.tasks.map((task, index) => {
-                  console.log(task);
-                  return (
-                      <p key={index}>{task._id}</p>
-                  );
-              });*/
-        }
-
-
-        if (this.state.tasksSelectedMonth !== '') {
-            monthlyTaskAmount = this.state.tasksSelectedMonth.length;
-
-            for (const task of this.state.tasksSelectedMonth) {
-                if (summaryReportTabMonth[task.status] === undefined) summaryReportTabMonth[task.status] = [];
-                summaryReportTabMonth[task.status].push(task);
-
-                if (tasksOfUserMonth[task.username] === undefined) tasksOfUserMonth[task.username] = [];
-                tasksOfUserMonth[task.username].push(task);
-            }
-
-
-
-            statusTaskAmountMonth = Object.entries(summaryReportTabMonth).map((obj, index) => {
-                return (
-                    <p key={index}>{obj[0]}:{obj[1].length}</p>
-                );
-            });
-
-
-
-            userStatisticsMonth = Object.entries(tasksOfUserMonth).map((obj, index) => {
-                return (
-                    <p key={index}>{obj[0]}:{obj[1].length}</p>
-                );
-            });
-
-
-        }
-
-        return (
-            <div id="reports">
-                <Calendar handleDaySelection={this.handleDaySelection} handleMonthSelection={this.handleMonthSelection} />
-                <div id="summary-report">
-                    {this.state.tasks !== '' ?
-                        <div id="daily-report">
-                            <p>Total tasks today: {totalAmount}</p>
-                            <div id="tasksPerStatus">{statusTaskAmount}</div>
-                            <div id="userStatistics"><p>User statistics:</p>{userStatistics}</div>
-                        </div> : ''}
-                    {this.state.tasksSelectedMonth !== '' ?
-                        <div id="monthly-report">
-                            <p>Tasks this month:{monthlyTaskAmount}</p>
-                            <div id="tasksPerStatusMonth">{statusTaskAmountMonth}</div>
-                            <div id="userStatisticsMonth"><p>User statistics:</p>{userStatisticsMonth}</div>
-                        </div>
-                        : ''}
-                </div>
-            </div>
-        );
-    }
-}
 
 
 export default AdminPanel;

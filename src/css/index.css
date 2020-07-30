@@ -91,16 +91,52 @@ body {
   #board {
     height: 100%;
     display: flex;
-    flex-basis:100%;
+    flex-basis: 100%;
     flex-flow: column nowrap;
     justify-content: flex-start;
     border: 1px solid blue;
   }
 
   #userinfo {
-    flex-basis: 5%;
-    border:2px solid red;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 5%;
+    margin: 0 2rem;
+    margin-bottom:0.5rem;
+    border-bottom:1px solid grey;
+  }
+  #userinfo p {
+    margin-right: 0.5rem;
+    font-weight: bold;
+  }
 
+  #userinfo svg {
+    color: #0088d2;
+  }
+
+  #userinfo svg:hover {
+    color: #9cdcfe;
+  }
+
+  #user-smallmenu {
+    position: fixed;
+    top: 5%;
+    border: 1px solid gray;
+    display: flex;
+    flex-flow:row wrap;
+  }
+
+  #user-smallmenu button {
+    flex:1 100%;
+    border:none;
+    margin-bottom:0.5rem;
+  }
+
+
+  #user-smallmenu button:hover {
+  background-color: lightgray;
   }
 
   .login {
@@ -112,14 +148,13 @@ body {
 
   .login form {
     display: flex;
-    flex:0 0 20%;
+    flex: 0 0 20%;
     flex-flow: column nowrap;
     justify-content: center;
   }
 
   .login form > * {
-    flex:0 0 3%;
-   
+    flex: 0 0 3%;
   }
 
   /* TASKS ON USER PANEL */

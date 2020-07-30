@@ -2,7 +2,7 @@
   #calendar {
     display: flex;
     flex-flow: column;
-    flex-basis: 50%;
+    flex: 0 35%;
     border: 1px solid green;
   }
 
@@ -19,6 +19,9 @@
 
   #year-selection p {
     text-align: center;
+    font-weight: bold;
+    color:black;
+    font-size:1.5rem;
   }
   #month-selection {
     display: flex;
@@ -27,8 +30,13 @@
     align-items: baseline;
   }
 
-  #month-selection span {
+  
+
+  #month-selection figure {
     cursor: pointer;
+    font-weight: bold;
+    color:black;
+    font-size:1.2rem;
   }
   .hidden {
     visibility: hidden;
@@ -36,19 +44,22 @@
   #month-name {
     text-align: center;
     cursor: pointer;
-    padding:0.5rem;
+    padding: 1rem;
+    font-weight: bold;
+    color:black;
+    font-size:1.2rem;
   }
 
-  #month-name:hover{
-    border:1px solid black;
-    border-radius:4px;
- 
+  #month-name:hover {
+    border: 1px solid black;
+    border-radius: 4px;
   }
 
   #day-names {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-evenly;
+    border-bottom:1px dashed black;
   }
 
   .day-name {
