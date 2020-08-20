@@ -2,12 +2,13 @@
   #reports {
     flex: 0 70%;
     display: flex;
+    flex-flow:row nowrap;
+    justify-content: space-between;
   }
 
   #summary-report {
-    flex: 0 65%;
+    flex: 0 60%;
     display: flex;
-    justify-content: space-around;
   }
 
   #summary-report > * {

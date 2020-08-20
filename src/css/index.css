@@ -104,8 +104,11 @@ body {
     justify-content: flex-end;
     flex: 0 5%;
     margin: 0 2rem;
-    margin-bottom:0.5rem;
-    border-bottom:1px solid grey;
+    margin-bottom:1rem;
+    border-style: outset;
+    border-right:0;
+    border-left:0;
+
   }
   #userinfo p {
     margin-right: 0.5rem;
@@ -155,17 +158,6 @@ body {
 
   .login form > * {
     flex: 0 0 3%;
-  }
-
-  /* TASKS ON USER PANEL */
-  #user-panel {
-    display: flex;
-    flex-flow: row nowrap;
-  }
-
-  #user-panel div {
-    flex: 1 50%;
-    border: 1px solid grey;
   }
 
   .task p {

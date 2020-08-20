@@ -1,7 +1,8 @@
 import React from 'react';
 import Calendar from './Calendar';
-import './css/Reports.css';
 import { API_URL, request } from './apiconnection.js'; //request
+import './css/Reports.css';
+
 
 class Reports extends React.Component {
     constructor(props) {
@@ -15,7 +16,7 @@ class Reports extends React.Component {
     }
 
     handleMonthSelection(month, year) {
-
+        console.log(month);
         fetch(request(`${API_URL}/gettasksmonth`, 'POST', { month: month, year: year }))
             .then(res => res.json())
             .then(result => {

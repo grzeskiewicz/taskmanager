@@ -4,8 +4,13 @@ import socket from './User'
 class Task extends React.Component { //single task with it's own time state
     constructor(props) {
         super(props);
-        this.state = { timetoaccept: '', timeleft: '', showtask: true };
+        this.state = {
+            timetoaccept: '', timeleft: '',
+            showtask: false
+        };
     }
+
+    //this.props.task.status === 'new' || this.props.task.status === 'pending' || this.props.task.status === 'overdue' || this.props.task.status === 'timeup' ? true : false
 
     componentDidMount() {
         if (this._isMounted) socket.on('countdown', (tasklist => this.countDown(tasklist)));
@@ -22,6 +27,7 @@ class Task extends React.Component { //single task with it's own time state
         }
     }
     acceptTask(task) {
+        console.log("accept", task);
         socket.emit('accept', task);
         this.setState({ timeleft: 240 });
     }
@@ -42,11 +48,26 @@ class Task extends React.Component { //single task with it's own time state
     }
 
     render() {
+        const progress = Math.round(this.props.task.timeleft / 240 * 100, 2);
+        const style = {
+            '--progress': `${progress}%`,
+            'background-color': progress < 30 ? 'red' : ''
+        };
         return (
-            <div className="task">
-                <p onClick={() => this.toggleTask(this.props.task)}>{this.state.showtask ? 'Hide task' : `Showtask ${this.parseTimeLeft(this.state.timeleft)}`}</p>
+            <div className={"task " + (this.state.showtask ? 'unwrapped' : 'wrapped')}>
+                <div onClick={() => this.toggleTask(this.props.task)}>
+                    <p>{this.state.showtask ? `Hide task` :
+                        (this.props.task.status === 'cancelled' || this.props.task.status === 'done') ?
+                            `Showtask | ${this.props.task.room} | ${this.props.task.status} ` :
+                            `Showtask | ${this.props.task.room} | ${this.props.task.status} | ${this.parseTimeLeft(this.props.task.timeleft)}`
+                    }</p>
+                    {!this.state.showtask && this.props.task.status == 'pending' ? <div className="progress-bar">
+                        <div style={style}>&nbsp;</div>
+                    </div> : ''}
+                </div>
+
                 {this.state.showtask ? <div>
-                    <p>Status: {this.props.task.status} </p>
+                    <p>Status: {this.props.task.status}</p>
                     <p>Room: {this.props.task.room}</p>
                     <p>Task: {this.props.task.content} </p>
                     <p>Time to accept: {this.parseTimeLeft(this.props.task.timetoaccept)} </p>

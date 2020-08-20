@@ -15,7 +15,7 @@ class Calendar extends React.Component {
   constructor(props) {
     super(props);
     this.handleDaySelection = this.handleDaySelection.bind(this);
-    this.handleMonthSelection=this.handleMonthSelection.bind(this);
+    this.handleMonthSelection = this.handleMonthSelection.bind(this);
     this.state = { dayClicked: '', selectedMonth: new Date().getMonth(), selectedYear: new Date().getFullYear() };
   }
 
@@ -81,13 +81,20 @@ class Calendar extends React.Component {
     this.props.handleDaySelection(date);
   }
 
-  handleMonthSelection(){
+  handleMonthSelection() {
     this.props.handleMonthSelection(this.state.selectedMonth, this.state.selectedYear);
   }
 
   changeMonth(val) {
     let selectedMonth = this.state.selectedMonth;
-    val === 1 ? this.setState({ selectedMonth: ++selectedMonth }) : this.setState({ selectedMonth: --selectedMonth });
+    if (val === 1) {
+      this.setState({ selectedMonth: ++selectedMonth });
+      this.props.handleMonthSelection(selectedMonth, this.state.selectedYear);
+    } else {
+      this.setState({ selectedMonth: --selectedMonth });
+      this.props.handleMonthSelection(selectedMonth, this.state.selectedYear);
+
+    }
   }
 
   render() {
@@ -127,17 +134,19 @@ class Calendar extends React.Component {
     });
 
     return (
-      <div id="calendar" className={this.props.className}>
-        <div id="calendar-head">
-          <div id="year-selection"><p>{this.state.selectedYear}</p></div>
-          <div id="month-selection">
-            <figure className={this.state.selectedMonth === 0 ? 'hidden' : ''} onClick={() => this.changeMonth(-1)}>{"<<"}</figure>
-            <p id="month-name" onClick={()=> this.handleMonthSelection()}>{MONTH_NAMES[this.state.selectedMonth]}</p>
-            <figure className={this.state.selectedMonth === monthNow ? 'hidden' : ''} onClick={() => this.changeMonth(1)}>{">>"}</figure>
+      <div id="calendar-wrapper">
+        <div id="calendar" className={this.props.className}>
+          <div id="calendar-head">
+            <div id="year-selection"><p>{this.state.selectedYear}</p></div>
+            <div id="month-selection">
+              <figure className={this.state.selectedMonth === 0 ? 'hidden' : ''} onClick={() => this.changeMonth(-1)}>{"<<"}</figure>
+              <p id="month-name" onClick={() => this.handleMonthSelection()}>{MONTH_NAMES[this.state.selectedMonth]}</p>
+              <figure className={this.state.selectedMonth === monthNow ? 'hidden' : ''} onClick={() => this.changeMonth(1)}>{">>"}</figure>
+            </div>
+            <div id="day-names">{week}</div>
           </div>
-          <div id="day-names">{week}</div>
+          <div id="main-calendar">{renderMonth}</div>
         </div>
-        <div id="main-calendar">{renderMonth}</div>
       </div>
     );
   }

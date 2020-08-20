@@ -66,7 +66,7 @@ class UserEditor extends React.Component {
                 return (
                     <div key={index} onClick={() => this.selectUser(user)} className={(this.state.selectedUsername === user.username ? 'selected' : '')}>
                         <p>{user.username}</p>
-                        <div>
+                        <div className="icons">
                             <FontAwesomeIcon icon={faKey} size="lg" onClick={() => this.editUser(user)} />
                             <FontAwesomeIcon icon={faTrash} size="lg" onClick={() => this.deleteUser(user)} />
                         </div>

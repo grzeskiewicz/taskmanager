@@ -1,0 +1,96 @@
+@media only screen and (min-width: 768px) {
+  /* TASKS ON USER PANEL */
+  #user-panel {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    margin: 0 2rem;
+    flex: 1 90%;
+  }
+
+  #user-panel fieldset {
+    border: 1px solid gray;
+    margin-bottom: 2rem;
+  }
+
+  #user-panel legend {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+  }
+
+  #user-panel .task {
+    border: 1px solid gray;
+    margin-bottom: 0.5rem;
+  }
+
+  #user-panel > div {
+    flex: 0 35%;
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .task.wrapped {
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .task.wrapped > div {
+    display:flex;
+    flex-flow:column;
+  }
+
+  .progress-bar {
+    flex:0 10%;
+    display: flex;
+  }
+
+  .progress-bar > div {
+    background-color: green;
+    flex: 0 var(--progress);
+  }
+
+  #pending-tasks legend {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  #pending-tasks legend p {
+    margin: 0;
+    margin-left: 0.2rem;
+    font-size: 0.8rem;
+  }
+
+  #new-tasks .task.wrapped {
+    animation: blinker 0.5s linear infinite;
+  }
+
+  @keyframes blinker {
+    50% {
+      color: red;
+    }
+  }
+
+  #done-tasks .task.wrapped {
+    color: green;
+  }
+
+  .clockimg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .task.wrapped:hover {
+    background-color: lightslategray;
+  }
+
+  .task.unwrapped > div {
+    margin: 0;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-bottom: 1px dotted black;
+  }
+
+  .task.unwrapped > p:hover {
+    background-color: lightslategray;
+  }
+}

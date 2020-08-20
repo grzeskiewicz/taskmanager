@@ -1,7 +1,7 @@
 import React from 'react';
 import socket from './User'
 import Task from './Task';
-
+import './css/userPanel.css';
 
 class UserPanel extends React.Component {
     constructor(props) {
@@ -11,14 +11,10 @@ class UserPanel extends React.Component {
     }
     componentDidMount() {
         socket.on('taskreceived', (task => {
-            console.log(task);
-            // if (this._isMounted) 
             this.setState({ tasks: this.state.tasks.concat(task) });
         }));
 
         socket.on('usertasks-for-user', (tasklist => {
-            //if (this._isMounted) 
-            console.log("Sent for user")
             this.setState({ tasks: tasklist });
         }));
         socket.on('timeup', (tasklist => {
@@ -41,7 +37,6 @@ class UserPanel extends React.Component {
         }));
 
         socket.on('cancelled', (tasklist => {
-            //if (this._isMounted) 
             this.setState({ tasks: tasklist });
         }));
     }
@@ -96,7 +91,6 @@ class UserPanel extends React.Component {
             tab[task.status].push(task);
         }
 
-        console.log(tab);
 
         let newTasksRender = tab['new'] !== undefined ? tab['new'].map((task, index) => { // POPRAWIĆ
             return (
@@ -106,7 +100,6 @@ class UserPanel extends React.Component {
 
 
         let doneTasksRender = tab['done'] !== undefined ? tab['done'].map((task, index) => {
-
             return (
                 <Task key={index} task={task} />
             );
@@ -114,7 +107,6 @@ class UserPanel extends React.Component {
 
 
         let pendingTasksRender = tab['pending'] !== undefined ? tab['pending'].map((task, index) => {
-            console.log(task);
             return (
                 <Task key={index} task={task} />
             );
@@ -146,17 +138,51 @@ class UserPanel extends React.Component {
             );
         }) : '';
 
+
         return (
             <div id="user-panel">
                 <div id="active-tasks">
-                    <div id="new-tasks">{newTasksRender}</div>
-                    <div id="pending-tasks">{pendingTasksRender}</div>
-                    <div id="overdue-tasks">{overdueTasksRender}</div>
-                    <div id="timeup-tasks">{timeupTasksRender}</div>
+                    <div id="new-tasks">
+                        <fieldset>
+                            <legend>New</legend>
+                            {newTasksRender ? newTasksRender : 'No new tasks'}
+                        </fieldset>
+                    </div>
+                    <div id="pending-tasks">
+                        <fieldset>
+                            <legend>
+                                {pendingTasksRender ? <img className="clockimg" src="https://icons8.com/vue-static/landings/animated-icons/icons/clock/clock_200.gif"></img> : ''}
+                                <p>Pending</p>
+                            </legend>
+                            {pendingTasksRender ? pendingTasksRender : 'No pending tasks'}
+                        </fieldset>
+                    </div>
+                    <div id="overdue-tasks">
+                        <fieldset>
+                            <legend>Overdue</legend>
+                            {overdueTasksRender ? overdueTasksRender : 'No overdue tasks'}
+                        </fieldset>
+                    </div>
+                    <div id="timeup-tasks">
+                        <fieldset>
+                            <legend>Timeup</legend>
+                            {timeupTasksRender ? timeupTasksRender:'No timeup tasks'}
+                        </fieldset>
+                    </div>
                 </div>
                 <div id="non-active-tasks">
-                    <div id="cancelled-tasks">{cancelledTasksRender}</div>
-                    <div id="done-tasks">{doneTasksRender}</div>
+                    <div id="cancelled-tasks">
+                        <fieldset>
+                            <legend>Cancelled</legend>
+                            {cancelledTasksRender}
+                        </fieldset>
+                    </div>
+                    <div id="done-tasks">
+                        <fieldset>
+                            <legend>Done</legend>
+                            {doneTasksRender}
+                        </fieldset>
+                    </div>
                 </div>
 
             </div>

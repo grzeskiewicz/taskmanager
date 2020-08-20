@@ -2,7 +2,7 @@
   #admin-panel {
     display: flex;
     flex-flow: row nowrap;
-    flex: 0 50%;
+    flex: 0 70%;
   }
 
   /* ======================================= */
@@ -16,8 +16,7 @@
 
   #menu > div {
     cursor: pointer;
-    border: 1px solid green;
-    border-radius: 4px;
+    border: 1px solid grey;
     box-shadow: 5px 5px 5px grey;
     flex: 0 10%;
     display: flex;
@@ -36,37 +35,48 @@
   }
 
   #task-manager-wrapper {
-    flex: 0 0 50%;
+    flex: 0 0 80%;
     display: flex;
     flex-flow: row nowrap;
-    border: 2px solid green;
+    justify-content: space-between;
   }
 
   #task-div {
-    flex: 0 80%;
+    flex: 0 85%;
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: row nowrap;
+    justify-content: space-between;
   }
 
   #user-manager {
-    flex: 0 0 20%;
+    flex: 0 0 70%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
   }
 
   #user-manager > * {
     margin-bottom: 1rem;
   }
 
+ 
+
   #showUserCreator {
-    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 0 20%;
   }
 
-  .userlist {
-    width: 50%;
+  #showUserCreator button {
+    flex: 0 7%;
   }
+
+
 
   #task-manager {
     display: flex;
     flex-flow: row wrap;
+    flex: 0 74%;
   }
 
   #tasks {
@@ -110,7 +120,7 @@
   #userlist {
     display: flex;
     flex-flow: column nowrap;
-    flex: 1 20%;
+    flex: 0 14%;
   }
   #userlist ul {
     margin: 0;
@@ -120,20 +130,20 @@
     list-style: none; /* Remove default bullets */
     vertical-align: middle;
     font-size: 1.3rem;
-    border:1px solid black;
-    border-radius: 3px;
+    border: 1px solid grey;
+    box-shadow: 5px 5px 5px grey;
     margin-bottom: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
   }
 
   #userlist .selected {
     background: lightgrey;
   }
 
-  #userlist li {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-  }
 
   #userlist li figure {
     margin: 0;
@@ -150,58 +160,41 @@
     color: red;
   }
 
-  /*
-  #userlist li.online::before {
-    content: "\2022"; 
-    color: green; 
-    font-weight: bold; 
-    display: inline-block; 
-    width: 3rem; 
-    font-size: 4rem;
-    padding: 0;
-    text-align: center;
-    border: solid 1px black;
-  }
-
-  #userlist li.offline::before {
-    content: "\2022"; 
-    color: red; 
-    font-weight: bold; 
-    display: inline-block; 
-    width: 3rem; 
-    font-size: 4rem;
-    padding: 0;
-
-    text-align: center;
-    border: solid 1px black;
-  }
-
-
-*/
   #create-task {
     display: flex;
     justify-content: center;
-    flex:0 20%;
+    flex: 0 25%;
   }
 
   #create-task form {
     display: flex;
     flex-flow: column nowrap;
-    flex: 0 50%;
+    flex: 1 100%;
   }
 
   #create-task form > * {
-    flex-grow: 1;
+    flex: 0 8%;
+    margin-bottom: 0.75rem;
   }
 
   #create-task form textarea {
-    flex-grow: 4;
+    flex: 0 30%;
+  }
+
+  #user-creator {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 0 20%;
   }
 
   #user-creator form {
+    flex: 0 90%;
     display: flex;
     flex-flow: column nowrap;
-    justify-content: center;
+  }
+
+  #user-creator form > * {
+flex:0 5%;
   }
 
   #user-creator > p {
@@ -212,6 +205,4 @@
   }
 
   /* ======================================= */
-
-
 }

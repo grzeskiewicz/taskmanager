@@ -20,15 +20,24 @@ class CreateTask extends React.Component { //split into new task form and taskli
 
     createTask(event) {
         event.preventDefault();
-        const task = {
-            username: this.props.username,
-            room: this.state.room,
-            content: this.state.taskcontent
-        };
-        socket.emit('newtask', task);
-        console.log('emit',task)
+        let sendOffline = true;
+        console.log(this.props.isSelectedUserOnline,this.props.username);
+        if (!this.props.isSelectedUserOnline) {
+            sendOffline = window.confirm(`Are you sure you want to send a task to ${this.props.username}? User is OFFLINE!`);
+        }
+
+        if (sendOffline) {
+            const task = {
+                username: this.props.username,
+                room: this.state.room,
+                content: this.state.taskcontent
+            };
+            socket.emit('newtask', task);
+        }
+
         event.target.reset();
         this.setState({ taskcontent: '', room: '' });
+
     }
 
     render() {
