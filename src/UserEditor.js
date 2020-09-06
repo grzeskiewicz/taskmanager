@@ -53,8 +53,13 @@ class UserEditor extends React.Component {
         if (this.state.password === this.state.password2) {
             authServices.resetPassword({ username: this.state.selectedUsername, password: this.state.password })
                 .then(res => {
-                    if (res.success) this.setState({ password: '', password2: '', passwordChanged: true, showEdit: false })
+                    if (res.success) {
+                        this.setState({ password: '', password2: '', passwordChanged: true, showEdit: false });
+                        alert("Password changed successfully!");
+                    }
                 });
+        } else {
+            alert("Passwords not matching!");
         }
     }
 
@@ -85,7 +90,7 @@ class UserEditor extends React.Component {
                             <button type='submit'>Reset</button>
                         </form>
 
-                    </div> : this.state.passwordChanged ? <p>Password changed</p> : ''}
+                    </div> : ''}
             </div>
         );
     }

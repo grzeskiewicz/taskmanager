@@ -98,7 +98,7 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const yearNow = new Date().getFullYear();
+   // const yearNow = new Date().getFullYear();
     const monthNow = new Date().getMonth();
     const today = new Date();
     const calendar = this.createCalendar(this.state.selectedYear, this.state.selectedMonth);

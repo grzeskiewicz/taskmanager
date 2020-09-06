@@ -110,7 +110,7 @@ class AdminPanel extends React.Component {
                 {this.state.showMenu === 2 ?
                     <div id="user-manager">
                         <UserEditor userStats={this.state.userStats} />
-                        {this.state.showUserCreator ? <UserCreator showUserCreator={() => this.showUserCreator} /> : <div id="showUserCreator"><button onClick={this.showUserCreator}> Add new user</button></div>}
+                        {this.state.showUserCreator ? <UserCreator showUserCreator={() => this.showUserCreator} /> : <div id="showUserCreator"><button onClick={this.showUserCreator}>New user</button></div>}
                     </div>
                     : ''}
 

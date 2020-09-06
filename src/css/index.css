@@ -160,9 +160,6 @@ body {
     flex: 0 0 3%;
   }
 
-  .task p {
-    margin: 5px;
-  }
 }
 
 .new {

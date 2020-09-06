@@ -1,0 +1,36 @@
+#create-task {
+  display: flex;
+  flex-flow: column;
+  flex: 0 25%;
+}
+
+#create-task form {
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1 100%;
+}
+
+#create-task form > * {
+  flex: 0 8%;
+  margin-bottom: 0.75rem;
+}
+
+#create-task form textarea {
+  flex: 0 30%;
+}
+
+#create-task form p {
+  border: 1px solid red;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  text-align: center;
+  flex: 0 6%;
+  animation: blinker2 1s linear infinite;
+}
+
+@keyframes blinker2 {
+  50% {
+color:red;
+  }
+}

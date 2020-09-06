@@ -81,7 +81,7 @@ class SelectedUserTasks extends React.Component { //split into new task form and
                     <td className="reset">{task.status === 'overdue' || task.status === 'timeup' ? <button onClick={() => this.resetTask(task)}>Reset</button> : '-'}</td>
                 </tr>
             );
-        }) : <tr>No tasks sent to user yet.</tr>;
+        }) : <tr><td></td><td></td><td></td><td>No tasks sent to user yet.</td><td></td><td></td><td></td></tr>;
 
         return (
             <div id="task-manager">

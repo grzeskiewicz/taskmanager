@@ -1,10 +1,12 @@
 import React from 'react';
 import socket from './User'
+import './css/createTask.css';
+
 
 class CreateTask extends React.Component { //split into new task form and tasklist
     constructor(props) {
         super(props);
-        this.state = { room: '', content: '' };
+        this.state = { room: '', content: '', roomError: '' };
         this.handleRoom = this.handleRoom.bind(this);
         this.handleTaskContent = this.handleTaskContent.bind(this);
         this.createTask = this.createTask.bind(this);
@@ -15,13 +17,12 @@ class CreateTask extends React.Component { //split into new task form and taskli
     }
 
     handleRoom(event) {
-        this.setState({ room: event.target.value });
+        isNaN(Number(event.target.value)) ? this.setState({ roomError: 'Room has to be a number!', room: event.target.value }) : this.setState({ room: event.target.value, roomError: '' });
     }
 
     createTask(event) {
         event.preventDefault();
         let sendOffline = true;
-        console.log(this.props.isSelectedUserOnline,this.props.username);
         if (!this.props.isSelectedUserOnline) {
             sendOffline = window.confirm(`Are you sure you want to send a task to ${this.props.username}? User is OFFLINE!`);
         }
@@ -47,9 +48,9 @@ class CreateTask extends React.Component { //split into new task form and taskli
                     <input name='room' autoFocus placeholder='Room Place' value={this.state.room} onChange={this.handleRoom} required></input>
                     <textarea name='taskcontent' placeholder='Task to do' value={this.state.taskcontent} onChange={this.handleTaskContent} required></textarea>
                     <button type='submit'>Send task</button>
+                    {this.state.roomError !== '' ? <p>{this.state.roomError}</p> : ''}
                 </form>
             </div>
-
         );
     }
 }

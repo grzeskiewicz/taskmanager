@@ -49,9 +49,18 @@ class Task extends React.Component { //single task with it's own time state
 
     render() {
         const progress = Math.round(this.props.task.timeleft / 240 * 100, 2);
+        let color;
+        if (progress > 60) {
+            color = 'green';
+        } else if (progress > 30 && progress <= 60) {
+            color = 'yellow';
+        }
+        else {
+            color = 'red';
+        }
         const style = {
             '--progress': `${progress}%`,
-            'background-color': progress < 30 ? 'red' : ''
+            'backgroundColor': color
         };
         return (
             <div className={"task " + (this.state.showtask ? 'unwrapped' : 'wrapped')}>
@@ -61,7 +70,7 @@ class Task extends React.Component { //single task with it's own time state
                             `Showtask | ${this.props.task.room} | ${this.props.task.status} ` :
                             `Showtask | ${this.props.task.room} | ${this.props.task.status} | ${this.parseTimeLeft(this.props.task.timeleft)}`
                     }</p>
-                    {!this.state.showtask && this.props.task.status == 'pending' ? <div className="progress-bar">
+                    {!this.state.showtask && this.props.task.status === 'pending' ? <div className="progress-bar">
                         <div style={style}>&nbsp;</div>
                     </div> : ''}
                 </div>

@@ -151,7 +151,7 @@ class UserPanel extends React.Component {
                     <div id="pending-tasks">
                         <fieldset>
                             <legend>
-                                {pendingTasksRender ? <img className="clockimg" src="https://icons8.com/vue-static/landings/animated-icons/icons/clock/clock_200.gif"></img> : ''}
+                                {pendingTasksRender ? <img className="clockimg" src="https://icons8.com/vue-static/landings/animated-icons/icons/clock/clock_200.gif" alt="Clock"></img> : ''}
                                 <p>Pending</p>
                             </legend>
                             {pendingTasksRender ? pendingTasksRender : 'No pending tasks'}

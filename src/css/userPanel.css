@@ -35,12 +35,12 @@
   }
 
   .task.wrapped > div {
-    display:flex;
-    flex-flow:column;
+    display: flex;
+    flex-flow: column;
   }
 
   .progress-bar {
-    flex:0 10%;
+    flex: 0 10%;
     display: flex;
   }
 
@@ -79,13 +79,21 @@
     height: 1rem;
   }
 
+  .task p {
+    margin: 5px;
+  }
+
+  .task.unwrapped p {
+    font-size:0.8rem;
+  }
+
   .task.wrapped:hover {
     background-color: lightslategray;
   }
 
   .task.unwrapped > div {
     margin: 0;
-    padding: 0.5rem;
+    padding: 0;
     cursor: pointer;
     border-bottom: 1px dotted black;
   }

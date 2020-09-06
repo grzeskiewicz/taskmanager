@@ -49,17 +49,15 @@
   }
 
   #user-manager {
-    flex: 0 0 70%;
+    flex: 0 0 30%;
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
+    flex-flow: column;
   }
 
   #user-manager > * {
     margin-bottom: 1rem;
+    margin-right:2rem;
   }
-
- 
 
   #showUserCreator {
     display: flex;
@@ -70,8 +68,6 @@
   #showUserCreator button {
     flex: 0 7%;
   }
-
-
 
   #task-manager {
     display: flex;
@@ -144,7 +140,6 @@
     background: lightgrey;
   }
 
-
   #userlist li figure {
     margin: 0;
     padding: 0;
@@ -160,31 +155,10 @@
     color: red;
   }
 
-  #create-task {
-    display: flex;
-    justify-content: center;
-    flex: 0 25%;
-  }
-
-  #create-task form {
-    display: flex;
-    flex-flow: column nowrap;
-    flex: 1 100%;
-  }
-
-  #create-task form > * {
-    flex: 0 8%;
-    margin-bottom: 0.75rem;
-  }
-
-  #create-task form textarea {
-    flex: 0 30%;
-  }
-
   #user-creator {
     display: flex;
     flex-flow: column nowrap;
-    flex: 0 20%;
+    flex: 0 40%;
   }
 
   #user-creator form {
@@ -194,7 +168,7 @@
   }
 
   #user-creator form > * {
-flex:0 5%;
+    flex: 0 5%;
   }
 
   #user-creator > p {

@@ -1,8 +1,8 @@
 @media only screen and (min-width: 768px) {
   #user-editor {
-    flex: 0 70%;
+    flex: 0 40%;
     display: flex;
-    justify-content: space-between;
+    flex-flow:column;
   }
   #user-editor > div {
     display: flex;
@@ -21,6 +21,7 @@
   #user-editor > div > div > p {
     flex: 0 0 30%;
     font-size: 1.4rem;
+    margin:0.5rem;
   }
 
   #user-editor .icons {
@@ -56,7 +57,7 @@
   }
 
   #userList-edit {
-    flex: 0 45%;
+    flex: 0 100%;
   }
 
   #userList-edit .selected {
@@ -65,15 +66,16 @@
 
   #edit {
     justify-content: center;
-    flex: 0 45%;
+    flex: 0 20%;
   }
   #edit form {
     display: flex;
     flex-flow: column nowrap;
+    justify-content: space-between;
     flex: 0 100%;
   }
 
   #edit form > * {
-    flex: 0 6%;
+    flex:0 30%;
   }
 }

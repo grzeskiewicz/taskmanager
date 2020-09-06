@@ -37,7 +37,7 @@ class Reports extends React.Component {
     }
 
     render() {
-        let summaryReport = 'X';
+        // let summaryReport = 'X';
         let summaryReportTab = [];
         let tasksOfUser = [];
         let totalAmount = 0;
@@ -79,12 +79,12 @@ class Reports extends React.Component {
             });
 
 
-
-            for (const obj of Object.entries(tasksOfUser)) { // sort every users task to the groups of status
-                //  obj[1]; -all the users's task, sort em
-
-
-            }
+            /*
+                        for (const obj of Object.entries(tasksOfUser)) { // sort every users task to the groups of status
+                            //  obj[1]; -all the users's task, sort em
+            
+            
+                        }*/
 
             /*  summaryReport = this.state.tasks.map((task, index) => {
                   console.log(task);
