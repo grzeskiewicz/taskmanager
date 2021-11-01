@@ -2,8 +2,10 @@ import React from 'react';
 import { authServices } from './services.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import io from 'socket.io-client';
-let socket = io('https://taskmanager-node.herokuapp.com');
+import socketIOClient from "socket.io-client";
+//let socket = io('https://taskmanager-node.herokuapp.com');
+const socket = socketIOClient('http://localhost:3001');
+
 
 
 class Login extends React.Component {
@@ -16,6 +18,7 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
+        console.log(socket);
         socket.connect();
     }
     handleLogin(event) {
@@ -32,9 +35,11 @@ class Login extends React.Component {
             .then(res => {
                 if (res.success) {
                     authServices.getInfo().then(res => {
+                        console.log(res);
                         if (res.success) {
                             socket.emit('logged', this.state.username);
                             const isAdmin = res.role === "admin" ? true : false;
+                            console.log(isAdmin, this.state.username)
                             this.props.authorised(this.state.username, res.role, isAdmin); //username, user role, admin:t/f
                         } else {
                             this.props.notAuthorised();
