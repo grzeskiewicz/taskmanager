@@ -1,5 +1,6 @@
 //export const API_URL='https://taskmanager-node.herokuapp.com';
-export const API_URL = 'http://localhost:3001';
+//export const API_URL = 'http://localhost:3001';
+export const API_URL = 'https://api.arielgrzes.ovh';
 
 export const headers = new Headers({
     'Accept': 'application/json',

@@ -53,7 +53,7 @@ export const authServices = {
                     this.storeUserCredentials(result.token);
                     return result;
                 } else { return result; }
-            }).catch(error => Promise.reject(new Error(error)));
+            }).catch(error => { return { "success": false, "msg": "Login API problem. Try again later." } });
     },
 
     getInfo() {
