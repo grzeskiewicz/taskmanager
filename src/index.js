@@ -5,9 +5,21 @@ import UserPanel from './UserPanel';
 import { Login, Logout } from './User';
 import './css/index.css';
 
+<<<<<<< HEAD
 console.log("xD")
 
 
+=======
+//vh calc for mobile CSS
+let vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+window.addEventListener('resize', () => {
+    // We execute the same script as before
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+});
+>>>>>>> 49becd92656f330000a7e8c5368108ae7e9b2369
 
 class Board extends React.Component {
     constructor(props) {

@@ -16,7 +16,7 @@ class UserCreator extends React.Component {
     componentDidMount() { }
     componentWillUnmount() { }
 
-    handleUsername(event) {
+    handleUser
         this.setState({ username: event.target.value });
     }
     handleName(event) {

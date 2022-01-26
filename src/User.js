@@ -4,6 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import socketIOClient from "socket.io-client";
 //let socket = io('https://taskmanager-node.herokuapp.com');
+<<<<<<< HEAD
+=======
+//const socket = socketIOClient('http://localhost:3001');
+>>>>>>> 49becd92656f330000a7e8c5368108ae7e9b2369
 const socket = socketIOClient('https://api.arielgrzes.ovh');
 
 
@@ -18,8 +22,12 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        console.log(socket);
         socket.connect();
+        socket.on("connect_error", () => {
+            setInterval(() => {
+                socket.connect();
+            }, 10000);
+        });
     }
     handleLogin(event) {
         event.preventDefault();
@@ -83,13 +91,13 @@ class Logout extends React.Component {
 
     }
 
-    componentWillMount() {
+    componentDidMount() {
         document.addEventListener('mousedown', this.toggleMenu, false);
     }
 
-    componentWillUnmount() {
+    /*componentWillUnmount() {
         document.removeEventListener('mousedown', this.toggleMenu, false);
-    }
+    }*/
 
     handleLogout() {
         authServices.logout();
@@ -102,12 +110,13 @@ class Logout extends React.Component {
     }
 
     toggleMenu(event) {
-        if (this.node.contains(event.target)) {
-            this.setState({ showMenu: true });
-        } else {
-            this.setState({ showMenu: false });
+        if (this.node) {
+            if (this.node.contains(event.target)) {
+                this.setState({ showMenu: true });
+            } else {
+                this.setState({ showMenu: false });
+            }
         }
-
     }
 
     render() {

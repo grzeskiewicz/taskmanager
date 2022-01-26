@@ -49,14 +49,14 @@
   }
 
   #user-manager {
-    flex: 0 0 30%;
+    flex: 0 0 15%;
     display: flex;
     flex-flow: column;
   }
 
   #user-manager > * {
     margin-bottom: 1rem;
-    margin-right:2rem;
+    margin-right:1rem;
   }
 
   #showUserCreator {
