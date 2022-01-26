@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import socketIOClient from "socket.io-client";
 //let socket = io('https://taskmanager-node.herokuapp.com');
-const socket = socketIOClient('http://localhost:3001');
+const socket = socketIOClient('https://api.arielgrzes.ovh');
 
 
 
@@ -119,8 +119,6 @@ class Logout extends React.Component {
                 {this.state.showMenu ?
                     <div id="user-smallmenu">
                         <button onClick={() => this.handleLogout()}>Logout</button>
-                        <button>test</button>
-                        <button>test2</button>
                     </div> : ''}
             </div>
         );

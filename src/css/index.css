@@ -129,12 +129,13 @@ body {
     border: 1px solid gray;
     display: flex;
     flex-flow:row wrap;
+    height:4vh;
+    width:10vh;
   }
 
   #user-smallmenu button {
     flex:1 100%;
     border:none;
-    margin-bottom:0.5rem;
   }
 
 
