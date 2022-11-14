@@ -9,7 +9,7 @@
     "@fortawesome/react-fontawesome": "^0.1.11",
     "react": "^16.14.0",
     "react-dom": "^16.6.3",
-    "react-scripts": "^3.4.4",
+    "react-scripts": "^5.0.1",
     "socket.io-client": "latest"
   },
   "scripts": {
